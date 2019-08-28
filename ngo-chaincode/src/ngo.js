@@ -485,6 +485,41 @@ let Chaincode = class {
   }
 
   /**
+   * Creates a Member
+   * 
+   * @param {*} stub 
+   * @param {*} args - JSON as follows:
+   * {
+      "firstName" : "John",
+      "middleName" : "M",
+      "lastName": "Doe",
+      "dob": "01/07/1993",
+      "ssn": "123456789",
+      "homePhoneNumber" : 1234567895
+    }
+   */
+  async createMember(stub, args) {
+    console.log('============= START : createMember ===========');
+    console.log('##### createMember arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'member' + json['ssn'];
+    json['docType'] = 'member';
+
+    console.log('##### createMember payload: ' + JSON.stringify(json));
+
+    // Check if the member already exists
+    let donorQuery = await stub.getState(key);
+    if (donorQuery.toString()) {
+      throw new Error('##### createMember - This donor already exists: ' + json['donorUserName']);
+    }
+
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    console.log('============= END : createMember ===========');
+  }
+
+  /**
    * Retrieves a specfic donor
    * 
    * @param {*} stub 
@@ -502,6 +537,24 @@ let Chaincode = class {
     return queryByKey(stub, key);
   }
 
+   /**
+   * Retrieves a specfic member
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryMember(stub, args) {
+    console.log('============= START : queryMember ===========');
+    console.log('##### queryMember arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'queryMember' + json['ssn'];
+    console.log('##### queryMember key: ' + key);
+
+    return queryByKey(stub, key);
+  }
+
   /**
    * Retrieves all donors
    * 
@@ -515,6 +568,21 @@ let Chaincode = class {
     let queryString = '{"selector": {"docType": "donor"}}';
     return queryByString(stub, queryString);
   }
+
+   /**
+   * Retrieves all members
+   * 
+   * @param {*} stub 
+   * @param {*} args 
+   */
+  async queryAllMembers(stub, args) {
+    console.log('============= START : queryAllMembers ===========');
+    console.log('##### queryAllMembers arguments: ' + JSON.stringify(args));
+ 
+    let queryString = '{"selector": {"docType": "member"}}';
+    return queryByString(stub, queryString);
+  }
+
 
   /************************************************************************************************
    * 
