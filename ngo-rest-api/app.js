@@ -199,6 +199,7 @@ app.get('/donors/:donorUserName/donations', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
+
 // POST Donor
 app.post('/donors', awaitHandler(async (req, res) => {
 	logger.info('================ POST on Donor');
@@ -217,6 +218,60 @@ app.post('/donors', awaitHandler(async (req, res) => {
 	res.send(message);
 }));
 
+// POST member
+app.post('/members', awaitHandler(async (req, res) => {
+	logger.info('================ POST on Member');
+	var args = req.body;
+	var fcn = "createDonor";
+
+    logger.info('##### POST on Member - username : ' + username);
+	logger.info('##### POST on Member - userOrg : ' + orgName);
+	logger.info('##### POST on Member - channelName : ' + channelName);
+	logger.info('##### POST on Member - chaincodeName : ' + chaincodeName);
+	logger.info('##### POST on Member - fcn : ' + fcn);
+	logger.info('##### POST on Member - args : ' + JSON.stringify(args));
+	logger.info('##### POST on Member - peers : ' + peers);
+
+	let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	res.send(message);
+}));
+
+// GET Member
+app.get('/members', awaitHandler(async (req, res) => {
+	logger.info('================ GET on Member');
+	let args = {};
+	let fcn = "queryAllDonors";
+
+    logger.info('##### GET on Member - username : ' + username);
+	logger.info('##### GET on Member - userOrg : ' + orgName);
+	logger.info('##### GET on Member - channelName : ' + channelName);
+	logger.info('##### GET on Member - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Member - fcn : ' + fcn);
+	logger.info('##### GET on Member - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Member - peers : ' + peers);
+
+    let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+ 	res.send(message);
+}));
+
+// GET a specific Donor
+app.get('/members/:donorUserName', awaitHandler(async (req, res) => {
+	logger.info('================ GET on Member by ID');
+	logger.info('Donor username : ' + req.params);
+	let args = req.params;
+	let fcn = "queryDonor";
+
+    logger.info('##### GET on Member by username - username : ' + username);
+	logger.info('##### GET on Member by username - userOrg : ' + orgName);
+	logger.info('##### GET on Member by username - channelName : ' + channelName);
+	logger.info('##### GET on Member by username - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Member by username - fcn : ' + fcn);
+	logger.info('##### GET on Member by username - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Member by username - peers : ' + peers);
+
+    let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+ 	res.send(message);
+}));
 /************************************************************************************
  * NGO methods
  ************************************************************************************/
