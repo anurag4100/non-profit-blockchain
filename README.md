@@ -40,7 +40,7 @@ To clean up your resources delete the Hyperledger Fabric network managed by Amaz
 * In the AWS CloudFormation console delete the stack with the stack name `<your network>-fabric-client-node`
 * In the Amazon Managed Blockchain console delete the member for your network. This will delete the peer node, the member, and finally, the Fabric network (assuming you created only one member)
 * In the AWS Cloud9 console delete your AWS Cloud9 instance
-*Test commit
+*Test commit - On local
 ## License
 
 This library is licensed under the Apache 2.0 License. 
