@@ -222,7 +222,7 @@ app.post('/donors', awaitHandler(async (req, res) => {
 app.post('/members', awaitHandler(async (req, res) => {
 	logger.info('================ POST on Member');
 	var args = req.body;
-	var fcn = "createDonor";
+	var fcn = "createMember";
 
     logger.info('##### POST on Member - username : ' + username);
 	logger.info('##### POST on Member - userOrg : ' + orgName);
@@ -240,7 +240,7 @@ app.post('/members', awaitHandler(async (req, res) => {
 app.get('/members', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Member');
 	let args = {};
-	let fcn = "queryAllDonors";
+	let fcn = "queryAllMembers";
 
     logger.info('##### GET on Member - username : ' + username);
 	logger.info('##### GET on Member - userOrg : ' + orgName);
@@ -255,11 +255,11 @@ app.get('/members', awaitHandler(async (req, res) => {
 }));
 
 // GET a specific Donor
-app.get('/members/:donorUserName', awaitHandler(async (req, res) => {
+app.get('/members/:ssn', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Member by ID');
-	logger.info('Donor username : ' + req.params);
+	logger.info('SSN: ' + req.params);
 	let args = req.params;
-	let fcn = "queryDonor";
+	let fcn = "queryMember";
 
     logger.info('##### GET on Member by username - username : ' + username);
 	logger.info('##### GET on Member by username - userOrg : ' + orgName);
