@@ -549,7 +549,7 @@ let Chaincode = class {
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-    let key = 'queryMember' + json['ssn'];
+    let key = 'member' + json['ssn'];
     console.log('##### queryMember key: ' + key);
 
     return queryByKey(stub, key);
@@ -794,6 +794,60 @@ let Chaincode = class {
     console.log('============= END : createDonation ===========');
   }
 
+  //Create contribution EMPLOYER
+
+  async createContributionEmployer(stub, args) {
+    console.log('============= START : createContributionEmployer ===========');
+    console.log('##### createContributionEmployer arguments: ' + JSON.stringify(args));
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+
+    let contractNumber = json[contractNumber];
+    let queryString = '{"selector": {"docType": "member", "contractNumber": "' + contractNumber + '"}}';
+    let allMembers = await queryByString(stub, queryString);
+    let employerContribAmount = json["contributionAmount"];
+    console.log('##### createContributionEmployer - Employer contribution amount is: ' + employerContribAmount);
+    let grossAmount = 0;
+    for (let n = 0; n < allMembers.length; n++) {
+      if (grossAmount < employerContribAmount) {
+        let member = allMembers[n];
+        console.log('##### createContributionEmployer - Processing for member :' + member["ssn"]);
+        let deferralPercent = member["contribAndDeferral"]["electiveDeferral"];
+        console.log('##### createContributionEmployer - Elective Deferral for member is: ' + deferralPercent);
+        let salary = member["salary"];
+        console.log('##### createContributionEmployer - Salary for member is: ' + salary);
+        let multiple = salary * deferralPercent;
+        let amount = 0;
+        if (multiple > 0) {
+          amount = multiple/100;
+        }
+        console.log('##### createContributionEmployer - Amount for member is: ' + amount);
+        grossAmount +=amount;
+        let totalNumberOfInvestments = member["investments"].length;
+        for (let j = 0; j < totalNumberOfInvestments; j++){
+          member.investments[j].dollarVal = amount/totalNumberOfInvestments;
+        }
+
+        let memberContribution = {
+          docType: 'contribution',
+          ssn: member["ssn"],
+          contractNumber: json["contractNumber"],
+          contributionKey: n,
+          contributionDate: new Date(),
+          investments: member.investments,
+        };
+        console.log('##### createContributionEmployer -Final JSON before  createContribution call is: ' + memberContribution);
+        this.createContribution(stub,memberContribution);
+      }else {
+        throw new Error("Contribution fund exhausted, make sure you have enough balance before contribution for employer: "+json["contractNumber"])
+      }
+
+    }
+
+
+    console.log('============= END : createContribution ===========');
+  }
+
   //Create contribution for  individual member
 
   async createContribution(stub, args) {
@@ -864,7 +918,7 @@ let Chaincode = class {
       throw new Error('##### createWithdrawal - This Contribution already exists: ' + json['withdrawalKey']);
    }
 
-    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    await stub.putState(key, Buffer.from(JSON  .stringify(json)));
     console.log('============= END : createWithdrawal ===========');
   }
 
