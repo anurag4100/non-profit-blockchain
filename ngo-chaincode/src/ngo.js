@@ -794,6 +794,81 @@ let Chaincode = class {
     console.log('============= END : createDonation ===========');
   }
 
+  //Create contribution for  individual member
+
+  async createContribution(stub, args) {
+    console.log('============= START : createContribution ===========');
+    console.log('##### createContribution arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'contribution' + json['contributionKey'];
+    json['docType'] = 'contribution';
+
+    console.log('##### createContribution : ' + JSON.stringify(json));
+
+    // Confirm the Member exists
+    let ngoKey = 'member' + json['ssn'];
+    let ngoQuery = await stub.getState(ngoKey);
+    if (!ngoQuery.toString()) {
+      throw new Error('##### createContribution - Cannot create contribution as the Member does not exist: ' + json['ssn']);
+    }
+
+    // Confirm the Employer exists
+    let donorKey = 'employer' + json['contractNumber'];
+    let donorQuery = await stub.getState(donorKey);
+    if (!donorQuery.toString()) {
+      throw new Error('##### createContribution - Cannot create contribution as the Employer does not exist: ' + json['contractNumber']);
+    }
+
+    // Check if the Contribution already exists
+    let donationQuery = await stub.getState(key);
+    if (donationQuery.toString()) {
+      throw new Error('##### createContribution - This Contribution already exists: ' + json['contributionKey']);
+    }
+
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    console.log('============= END : createContribution ===========');
+  }
+
+  //Create withdrawal for  individual member
+
+  async createWithdrawal(stub, args) {
+    console.log('============= START : createWithdrawal ===========');
+    console.log('##### createWithdrawal arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'withdrawal' + json['withdrawalKey'];
+    json['docType'] = 'withdrawal';
+
+    console.log('##### createWithdrawal : ' + JSON.stringify(json));
+
+    // Confirm the Member exists
+    let ngoKey = 'member' + json['ssn'];
+    let ngoQuery = await stub.getState(ngoKey);
+    if (!ngoQuery.toString()) {
+      throw new Error('##### createWithdrawal - Cannot create contribution as the Member does not exist: ' + json['ssn']);
+    }
+
+    // Confirm the Employer exists
+    let donorKey = 'employer' + json['contractNumber'];
+    let donorQuery = await stub.getState(donorKey);
+    if (!donorQuery.toString()) {
+      throw new Error('##### createWithdrawal - Cannot create contribution as the Employer does not exist: ' + json['contractNumber']);
+    }
+
+    // Check if the Contribution already exists
+    let donationQuery = await stub.getState(key);
+    if (donationQuery.toString()) {
+      throw new Error('##### createWithdrawal - This Contribution already exists: ' + json['withdrawalKey']);
+   }
+
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    console.log('============= END : createWithdrawal ===========');
+  }
+
+
   /**
    * Retrieves a specfic donation
    * 
