@@ -236,6 +236,42 @@ app.post('/members', awaitHandler(async (req, res) => {
 	res.send(message);
 }));
 
+// POST employer
+app.post('/employers', awaitHandler(async (req, res) => {
+	logger.info('================ POST on employers');
+	var args = req.body;
+	var fcn = "createEmployer";
+
+	logger.info('##### POST on Member - username : ' + username);
+	logger.info('##### POST on Member - userOrg : ' + orgName);
+	logger.info('##### POST on Member - channelName : ' + channelName);
+	logger.info('##### POST on Member - chaincodeName : ' + chaincodeName);
+	logger.info('##### POST on Member - fcn : ' + fcn);
+	logger.info('##### POST on Member - args : ' + JSON.stringify(args));
+	logger.info('##### POST on Member - peers : ' + peers);
+
+	let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	res.send(message);
+}));
+
+// POST plan
+app.post('/plans', awaitHandler(async (req, res) => {
+	logger.info('================ POST on plan');
+	var args = req.body;
+	var fcn = "createPlan";
+
+	logger.info('##### POST on Member - username : ' + username);
+	logger.info('##### POST on Member - userOrg : ' + orgName);
+	logger.info('##### POST on Member - channelName : ' + channelName);
+	logger.info('##### POST on Member - chaincodeName : ' + chaincodeName);
+	logger.info('##### POST on Member - fcn : ' + fcn);
+	logger.info('##### POST on Member - args : ' + JSON.stringify(args));
+	logger.info('##### POST on Member - peers : ' + peers);
+
+	let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	res.send(message);
+}));
+
 // GET Member
 app.get('/members', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Member');
@@ -254,7 +290,44 @@ app.get('/members', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-// GET a specific Donor
+// GET employer
+app.get('/employers', awaitHandler(async (req, res) => {
+	logger.info('================ GET on employer');
+	let args = {};
+	let fcn = "queryAllEmployers";
+
+	logger.info('##### GET on Member - username : ' + username);
+	logger.info('##### GET on Member - userOrg : ' + orgName);
+	logger.info('##### GET on Member - channelName : ' + channelName);
+	logger.info('##### GET on Member - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Member - fcn : ' + fcn);
+	logger.info('##### GET on Member - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Member - peers : ' + peers);
+
+	let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	res.send(message);
+}));
+
+// GET plan
+app.get('/plans', awaitHandler(async (req, res) => {
+	logger.info('================ GET on plan');
+	let args = {};
+	let fcn = "queryAllPlans";
+
+	logger.info('##### GET on Member - username : ' + username);
+	logger.info('##### GET on Member - userOrg : ' + orgName);
+	logger.info('##### GET on Member - channelName : ' + channelName);
+	logger.info('##### GET on Member - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Member - fcn : ' + fcn);
+	logger.info('##### GET on Member - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Member - peers : ' + peers);
+
+	let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	res.send(message);
+}));
+
+
+// GET a specific Member
 app.get('/members/:ssn', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Member by ID');
 	logger.info('SSN: ' + req.params);
@@ -272,6 +345,46 @@ app.get('/members/:ssn', awaitHandler(async (req, res) => {
     let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
  	res.send(message);
 }));
+
+// GET a specific Employer
+app.get('/employers/:contractNumber', awaitHandler(async (req, res) => {
+	logger.info('================ GET on Employer by ID');
+	logger.info('contractNumber: ' + req.params);
+	let args = req.params;
+	let fcn = "queryEmployer";
+
+	logger.info('##### GET on Member by username - username : ' + username);
+	logger.info('##### GET on Member by username - userOrg : ' + orgName);
+	logger.info('##### GET on Member by username - channelName : ' + channelName);
+	logger.info('##### GET on Member by username - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Member by username - fcn : ' + fcn);
+	logger.info('##### GET on Member by username - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Member by username - peers : ' + peers);
+
+	let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	res.send(message);
+}));
+
+// GET a specific Plan
+app.get('/plans/:planId', awaitHandler(async (req, res) => {
+	logger.info('================ GET on Plan by ID');
+	logger.info('planId: ' + req.params);
+	let args = req.params;
+	let fcn = "queryPlan";
+
+	logger.info('##### GET on Member by username - username : ' + username);
+	logger.info('##### GET on Member by username - userOrg : ' + orgName);
+	logger.info('##### GET on Member by username - channelName : ' + channelName);
+	logger.info('##### GET on Member by username - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Member by username - fcn : ' + fcn);
+	logger.info('##### GET on Member by username - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Member by username - peers : ' + peers);
+
+	let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	res.send(message);
+}));
+
+
 /************************************************************************************
  * NGO methods
  ************************************************************************************/
