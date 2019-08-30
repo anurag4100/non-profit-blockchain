@@ -806,13 +806,13 @@ async function dummySpend() {
 	message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
 }
 
-(function loop() {
+/*(function loop() {
     var rand = Math.round(Math.random() * (20000 - 5000)) + 5000;
     setTimeout(function() {
 		dummySpend();
         loop();  
     }, rand);
-}());
+}());*/
 
 /************************************************************************************
  * Error handler
