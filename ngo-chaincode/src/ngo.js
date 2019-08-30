@@ -71,8 +71,8 @@ async function queryByString(stub, queryString) {
     endKey = docType + "z";
   }
   else {
-    throw new Error('##### queryByString - Cannot call queryByString without a docType element: ' + queryString);   
-  }
+  throw new Error('##### queryByString - Cannot call queryByString without a docType element: ' + queryString);
+}
 
   let iterator = await stub.getStateByRange(startKey, endKey);
 
@@ -625,6 +625,48 @@ let Chaincode = class {
     console.log('============= END : createNGO ===========');
   }
 
+  async createEmployer(stub, args) {
+    console.log('============= START : createEmployer ===========');
+    console.log('##### createEmployer arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'employer' + json['contractNumber'];
+    json['docType'] = 'employer';
+
+    console.log('##### createEmployer payload: ' + JSON.stringify(json));
+
+    // Check if the Employer already exists
+    let ngoQuery = await stub.getState(key);
+    if (ngoQuery.toString()) {
+      throw new Error('##### createEmployer - This Employer already exists: ' + json['contractNumber']);
+    }
+
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    console.log('============= END : createEmployer ===========');
+  }
+
+  async createPlan(stub, args) {
+    console.log('============= START : createPlan ===========');
+    console.log('##### createPlan arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'plan' + json['planId'];
+    json['docType'] = 'plan';
+
+    console.log('##### createPlan payload: ' + JSON.stringify(json));
+
+    // Check if the NGO already exists
+    let ngoQuery = await stub.getState(key);
+    if (ngoQuery.toString()) {
+      throw new Error('##### createPlan - This Plan already exists: ' + json['planId']);
+    }
+
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
+    console.log('============= END : createPlan ===========');
+  }
+
   /**
    * Retrieves a specfic ngo
    * 
@@ -643,6 +685,30 @@ let Chaincode = class {
     return queryByKey(stub, key);
   }
 
+  async queryEmployer(stub, args) {
+    console.log('============= START : queryEmployer ===========');
+    console.log('##### queryEmployer arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'employer' + json['contractNumber'];
+    console.log('##### queryEmployer key: ' + key);
+
+    return queryByKey(stub, key);
+  }
+
+  async queryPlan(stub, args) {
+    console.log('============= START : queryPlan ===========');
+    console.log('##### queryPlan arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let key = 'plan' + json['planId'];
+    console.log('##### queryPlan key: ' + key);
+
+    return queryByKey(stub, key);
+  }
+
   /**
    * Retrieves all ngos
    * 
@@ -656,6 +722,23 @@ let Chaincode = class {
     let queryString = '{"selector": {"docType": "ngo"}}';
     return queryByString(stub, queryString);
   }
+
+  async queryAllEmployers(stub, args) {
+    console.log('============= START : queryAllEmployers ===========');
+    console.log('##### queryAllEmployers arguments: ' + JSON.stringify(args));
+
+    let queryString = '{"selector": {"docType": "employer"}}';
+    return queryByString(stub, queryString);
+  }
+
+  async queryAllPlans(stub, args) {
+    console.log('============= START : queryAllPlans ===========');
+    console.log('##### queryAllPlans arguments: ' + JSON.stringify(args));
+
+    let queryString = '{"selector": {"docType": "plan"}}';
+    return queryByString(stub, queryString);
+  }
+
 
   /************************************************************************************************
    * 
