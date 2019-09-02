@@ -814,7 +814,7 @@ let Chaincode = class {
     let grossAmount = 0;
     for (let n = 0; n < allMembers.length; n++) {
       if (grossAmount < employerContribAmount) {
-        let member = allMembers[n];
+        let member = allMembers[n]['Record'];
         console.log('##### createContributionEmployer - Processing for member :' + member['ssn']);
         let contribAndDeferral = member['contribAndDeferral'];
         let deferralPercent = contribAndDeferral['electiveDeferral'];
