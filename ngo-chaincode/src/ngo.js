@@ -17,7 +17,16 @@
 'use strict';
 const shim = require('fabric-shim');
 const util = require('util');
-
+var log4js = require('log4js');
+log4js.configure({
+  appenders: {
+    out: { type: 'stdout' },
+  },
+  categories: {
+    default: { appenders: ['out'], level: 'info' },
+  }
+});
+var logger = log4js.getLogger('NGOAPI');
 /************************************************************************************************
  * 
  * GENERAL FUNCTIONS 
@@ -803,8 +812,9 @@ let Chaincode = class {
     let json = JSON.parse(args);
 
     let contractNumber = json["contractNumber"];
-    let queryString = '{"selector": {"docType": "member", "contractNumber": "' + contractNumber + '"}}';
+    let queryString = '{"selector": {"docType": "member", "contractNumber": "' + json['contractNumber'] + '"}}';
     let allMembers = await queryByString(stub, queryString);
+    logger.info("Anurag - All members from search :"+allMembers);
     let employerContribAmount = json["contributionAmount"];
     console.log('##### createContributionEmployer - Employer contribution amount is: ' + employerContribAmount);
     let grossAmount = 0;
