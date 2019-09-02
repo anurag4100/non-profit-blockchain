@@ -803,8 +803,11 @@ let Chaincode = class {
     let json = JSON.parse(args);
 
     let contractNumber = json["contractNumber"];
-    let queryString = '{"selector": {"docType": "member", "contractNumber": "' + contractNumber + '"}}';
+    let queryString = '{"selector": {"docType": "member", "contractNumber": "' + json['contractNumber'] + '"}}';
     let allMembers = await queryByString(stub, queryString);
+    if (!allMembers.toString()) {
+      throw new Error('##### No members exist for employer: ' + json['contractNumber']);
+    }
     let employerContribAmount = json["contributionAmount"];
     console.log('##### createContributionEmployer - Employer contribution amount is: ' + employerContribAmount);
     let grossAmount = 0;
@@ -812,7 +815,8 @@ let Chaincode = class {
       if (grossAmount < employerContribAmount) {
         let member = allMembers[n];
         console.log('##### createContributionEmployer - Processing for member :' + member["ssn"]);
-        let deferralPercent = member.contribAndDeferral.electiveDeferral;
+        let contribAndDeferral = member["contribAndDeferral"];
+        let deferralPercent = contribAndDeferral["electiveDeferral"];
         console.log('##### createContributionEmployer - Elective Deferral for member is: ' + deferralPercent);
         let salary = member["salary"];
         console.log('##### createContributionEmployer - Salary for member is: ' + salary);
