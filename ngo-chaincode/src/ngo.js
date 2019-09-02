@@ -846,7 +846,41 @@ let Chaincode = class {
           investments: member.investments,
         };
         console.log('##### createContributionEmployer -Final JSON before  createContribution call is: ' + memberContribution);
-        this.createContribution(stub,memberContribution);
+        //individual contribution method starts here
+
+        console.log('============= START : createContribution ===========');
+        console.log('##### createContribution arguments: ' + JSON.stringify(memberContribution));
+
+        // args is passed as a JSON string
+        let json = memberContribution;
+        let key = 'contribution' + json['contributionKey'];
+        json['docType'] = 'contribution';
+
+        console.log('##### createContribution : ' + JSON.stringify(json));
+
+        // Confirm the Member exists
+        let ngoKey = 'member' + json['ssn'];
+        let ngoQuery = await stub.getState(ngoKey);
+        if (!ngoQuery.toString()) {
+          throw new Error('##### createContribution - Cannot create contribution as the Member does not exist: ' + json['ssn']);
+        }
+
+        // Confirm the Employer exists
+        let donorKey = 'employer' + json['contractNumber'];
+        let donorQuery = await stub.getState(donorKey);
+        if (!donorQuery.toString()) {
+          throw new Error('##### createContribution - Cannot create contribution as the Employer does not exist: ' + json['contractNumber']);
+        }
+
+        // Check if the Contribution already exists
+        let donationQuery = await stub.getState(key);
+        if (donationQuery.toString()) {
+          throw new Error('##### createContribution - This Contribution already exists: ' + json['contributionKey']);
+        }
+
+        await stub.putState(key, Buffer.from(JSON.stringify(json)));
+        console.log('============= END : createContribution ===========');
+
       }else {
         throw new Error("Contribution fund exhausted, make sure you have enough balance before contribution for employer: "+json["contractNumber"])
       }
@@ -858,8 +892,7 @@ let Chaincode = class {
   }
 
   //Create contribution for  individual member
-
-  async createContribution(stub, args) {
+  async createContribution (stub, args) {
     console.log('============= START : createContribution ===========');
     console.log('##### createContribution arguments: ' + JSON.stringify(args));
 
