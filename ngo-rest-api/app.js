@@ -328,6 +328,24 @@ app.get('/employers', awaitHandler(async (req, res) => {
 	res.send(message);
 }));
 
+// GET members for a particular employer
+app.get('/employers/:contractNumber/members', awaitHandler(async (req, res) => {
+    logger.info('================ GET on employer');
+    let args = {};
+    let fcn = "queryMembersForEmployer";
+
+    logger.info('##### GET on Member - username : ' + username);
+    logger.info('##### GET on Member - userOrg : ' + orgName);
+    logger.info('##### GET on Member - channelName : ' + channelName);
+    logger.info('##### GET on Member - chaincodeName : ' + chaincodeName);
+    logger.info('##### GET on Member - fcn : ' + fcn);
+    logger.info('##### GET on Member - args : ' + JSON.stringify(args));
+    logger.info('##### GET on Member - peers : ' + peers);
+
+    let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+    res.send(message);
+}));
+
 // GET plan
 app.get('/plans', awaitHandler(async (req, res) => {
 	logger.info('================ GET on plan');
