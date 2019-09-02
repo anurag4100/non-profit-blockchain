@@ -817,9 +817,9 @@ let Chaincode = class {
         let member = allMembers[n];
         console.log('##### createContributionEmployer - Processing for member :' + member['ssn']);
         let contribAndDeferral = member['contribAndDeferral'];
-        //let deferralPercent = contribAndDeferral["electiveDeferral"];
+        let deferralPercent = contribAndDeferral['electiveDeferral'];
         //hardcoding for now
-        let deferralPercent = 6;
+        //let deferralPercent = 6;
         console.log('##### createContributionEmployer - Elective Deferral for member is: ' + deferralPercent);
         let salary = member['salary'];
         console.log('##### createContributionEmployer - Salary for member is: ' + salary);
