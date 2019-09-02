@@ -800,10 +800,7 @@ let Chaincode = class {
     console.log('============= START : createContributionEmployer ===========');
     //console.log('##### createContributionEmployer arguments: ' + JSON.stringify(args));
     // args is passed as a JSON string
-    let json  = {
-      contractNumber: 123001,
-      contributionAmount: 8000
-    };
+    let json = JSON.parse(args);
 
     let contractNumber = json["contractNumber"];
     let queryString = '{"selector": {"docType": "member", "contractNumber": "' + json['contractNumber'] + '"}}';
@@ -847,7 +844,7 @@ let Chaincode = class {
           contractNumber: contractNumber,
           contributionKey: n,
           contributionDate: new Date(),
-          investments: member.investments,
+          investments: member.investments
         };
         console.log('##### createContributionEmployer -Final JSON before  createContribution call is: ' + memberContribution);
         //individual contribution method starts here
