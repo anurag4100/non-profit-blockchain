@@ -830,10 +830,11 @@ let Chaincode = class {
         }
         console.log('##### createContributionEmployer - Amount for member is: ' + amount);
         grossAmount +=amount;
-        let memberInvestments = member.investments;
-        let totalNumberOfInvestments = memberInvestments.length;
+        let memberInvestments = JSON.parse(member.investments.toString());
+        //hardcoding for now
+        let totalNumberOfInvestments = 2;
         for (let j = 0; j < totalNumberOfInvestments; j++){
-          member.investments[j].dollarVal = amount/totalNumberOfInvestments;
+          //member.investments[j].dollarVal = amount/totalNumberOfInvestments;
         }
 
         let memberContribution = {
