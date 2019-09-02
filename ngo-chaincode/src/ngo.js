@@ -800,7 +800,11 @@ let Chaincode = class {
     console.log('============= START : createContributionEmployer ===========');
     console.log('##### createContributionEmployer arguments: ' + JSON.stringify(args));
     // args is passed as a JSON string
-    let json = JSON.parse(args);
+    let json = JSON.parse("{\n" +
+        "\t\"contractNumber\": 123001,\n" +
+        "\t\"contributionAmount\":8000\n" +
+        "\t\n" +
+        "}");
 
     let contractNumber = json["contractNumber"];
     let queryString = '{"selector": {"docType": "member", "contractNumber": "' + json['contractNumber'] + '"}}';
@@ -815,6 +819,7 @@ let Chaincode = class {
     for (let n = 0; n < allMembers.length; n++) {
       if (grossAmount < employerContribAmount) {
         let member = allMembers[n];
+        return member;
         console.log('##### createContributionEmployer - Processing for member :' + member["ssn"]);
         let contribAndDeferral = member["contribAndDeferral"];
         //let deferralPercent = contribAndDeferral["electiveDeferral"];
