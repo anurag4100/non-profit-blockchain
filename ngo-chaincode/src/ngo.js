@@ -802,7 +802,7 @@ let Chaincode = class {
     // args is passed as a JSON string
     let json = JSON.parse(args);
 
-    let contractNumber = json[contractNumber];
+    let contractNumber = json["contractNumber"];
     let queryString = '{"selector": {"docType": "member", "contractNumber": "' + contractNumber + '"}}';
     let allMembers = await queryByString(stub, queryString);
     let employerContribAmount = json["contributionAmount"];
