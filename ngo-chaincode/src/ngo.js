@@ -818,8 +818,6 @@ let Chaincode = class {
         console.log('##### createContributionEmployer - Processing for member :' + member['ssn']);
         let contribAndDeferral = member['contribAndDeferral'];
         let deferralPercent = contribAndDeferral['electiveDeferral'];
-        //hardcoding for now
-        //let deferralPercent = 6;
         console.log('##### createContributionEmployer - Elective Deferral for member is: ' + deferralPercent);
         let salary = member['salary'];
         console.log('##### createContributionEmployer - Salary for member is: ' + salary);
@@ -830,11 +828,10 @@ let Chaincode = class {
         }
         console.log('##### createContributionEmployer - Amount for member is: ' + amount);
         grossAmount +=amount;
-        //let memberInvestments = JSON.parse(member.investments.toString());
-        //hardcoding for now
-        let totalNumberOfInvestments = 2;
+
+        let totalNumberOfInvestments = member.investments.length;
         for (let j = 0; j < totalNumberOfInvestments; j++){
-          //member.investments[j].dollarVal = amount/totalNumberOfInvestments;
+          member.investments[j].dollarVal = amount/totalNumberOfInvestments;
         }
 
         let memberContribution = {
@@ -853,7 +850,8 @@ let Chaincode = class {
 
         // args is passed as a JSON string
         let json1 = memberContribution;
-        let key = 'contribution' + json1['contributionKey'];
+        let today = new Date();
+        let key = 'contribution' + json1['contributionKey']+':'+today.getHours()+':'+today.getMinutes();
         json1['docType'] = 'contribution';
 
         console.log('##### createContribution : ' + JSON.stringify(json1));
@@ -891,40 +889,20 @@ let Chaincode = class {
     console.log('============= END : createContribution ===========');
   }
 
-  //Create contribution for  individual member
-  async createContribution (stub, args) {
-    console.log('============= START : createContribution ===========');
-    console.log('##### createContribution arguments: ' + JSON.stringify(args));
+  /**
+   * Retrieves contributions by specific member
+   *
+   * @param {*} stub
+   * @param {*} args
+   */
+  async queryContributionsByMember(stub, args) {
+    console.log('============= START : queryContributionsByMember ===========');
+    console.log('##### queryContributionsByMember arguments: ' + JSON.stringify(args));
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-    let key = 'contribution' + json['contributionKey'];
-    json['docType'] = 'contribution';
-
-    console.log('##### createContribution : ' + JSON.stringify(json));
-
-    // Confirm the Member exists
-    let ngoKey = 'member' + json['ssn'];
-    let ngoQuery = await stub.getState(ngoKey);
-    if (!ngoQuery.toString()) {
-      throw new Error('##### createContribution - Cannot create contribution as the Member does not exist: ' + json['ssn']);
-    }
-
-    // Confirm the Employer exists
-    let donorKey = 'employer' + json['contractNumber'];
-    let donorQuery = await stub.getState(donorKey);
-    if (!donorQuery.toString()) {
-      throw new Error('##### createContribution - Cannot create contribution as the Employer does not exist: ' + json['contractNumber']);
-    }
-
-    // Check if the Contribution already exists
-    let donationQuery = await stub.getState(key);
-    if (donationQuery.toString()) {
-      throw new Error('##### createContribution - This Contribution already exists: ' + json['contributionKey']);
-    }
-
-    await stub.putState(key, Buffer.from(JSON.stringify(json)));
-    console.log('============= END : createContribution ===========');
+    let queryString = '{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}';
+    return queryByString(stub, queryString);
   }
 
   //Create withdrawal for  individual member
