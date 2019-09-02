@@ -802,27 +802,26 @@ let Chaincode = class {
     // args is passed as a JSON string
     let json = JSON.parse(args);
 
-    let contractNumber = json["contractNumber"];
+    let contractNumber = json['contractNumber'];
     let queryString = '{"selector": {"docType": "member", "contractNumber": "' + json['contractNumber'] + '"}}';
     let allMembersObj = await queryByString(stub, queryString);
     if (!allMembersObj.toString()) {
       throw new Error('##### No members exist for employer: ' + json['contractNumber']);
     }
     let allMembers = JSON.parse(allMembersObj.toString());
-    let employerContribAmount = json["contributionAmount"];
+    let employerContribAmount = json['contributionAmount'];
     console.log('##### createContributionEmployer - Employer contribution amount is: ' + employerContribAmount);
     let grossAmount = 0;
     for (let n = 0; n < allMembers.length; n++) {
       if (grossAmount < employerContribAmount) {
         let member = allMembers[n];
-        return member;
-        console.log('##### createContributionEmployer - Processing for member :' + member["ssn"]);
-        let contribAndDeferral = member["contribAndDeferral"];
+        console.log('##### createContributionEmployer - Processing for member :' + member['ssn']);
+        let contribAndDeferral = member['contribAndDeferral'];
         //let deferralPercent = contribAndDeferral["electiveDeferral"];
         //hardcoding for now
         let deferralPercent = 6;
         console.log('##### createContributionEmployer - Elective Deferral for member is: ' + deferralPercent);
-        let salary = member["salary"];
+        let salary = member['salary'];
         console.log('##### createContributionEmployer - Salary for member is: ' + salary);
         let multiple = salary * deferralPercent;
         let amount = 0;
@@ -840,7 +839,7 @@ let Chaincode = class {
 
         let memberContribution = {
           docType: 'contribution',
-          ssn: member["ssn"],
+          ssn: member['ssn'],
           contractNumber: contractNumber,
           contributionKey: n,
           contributionDate: new Date(),
