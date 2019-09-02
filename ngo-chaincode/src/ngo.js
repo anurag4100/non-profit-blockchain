@@ -805,7 +805,7 @@ let Chaincode = class {
     let contractNumber = json["contractNumber"];
     let queryString = '{"selector": {"docType": "member", "contractNumber": "' + json['contractNumber'] + '"}}';
     let allMembersObj = await queryByString(stub, queryString);
-    if (!allMembers.toString()) {
+    if (!allMembersObj.toString()) {
       throw new Error('##### No members exist for employer: ' + json['contractNumber']);
     }
     let allMembers = JSON.parse(allMembersObj.toString());
