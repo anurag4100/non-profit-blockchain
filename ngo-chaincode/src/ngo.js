@@ -800,7 +800,7 @@ let Chaincode = class {
     console.log('============= START : createContributionEmployer ===========');
     console.log('##### createContributionEmployer arguments: ' + JSON.stringify(args));
     // args is passed as a JSON string
-    let tempJson = '{"contractNumber": 123001,"contributionAmount":8000}';
+    let tempJson = "{\"contractNumber\": \"123001\",\"contributionAmount\":\"8000\"}";
     let json = JSON.parse(tempJson);
 
     let contractNumber = json["contractNumber"];
