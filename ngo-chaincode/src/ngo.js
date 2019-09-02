@@ -840,7 +840,7 @@ let Chaincode = class {
         let memberContribution = {
           docType: 'contribution',
           ssn: member["ssn"],
-          contractNumber: json["contractNumber"],
+          contractNumber: contractNumber,
           contributionKey: n,
           contributionDate: new Date(),
           investments: member.investments,
@@ -852,37 +852,37 @@ let Chaincode = class {
         console.log('##### createContribution arguments: ' + JSON.stringify(memberContribution));
 
         // args is passed as a JSON string
-        let json = memberContribution;
-        let key = 'contribution' + json['contributionKey'];
-        json['docType'] = 'contribution';
+        let json1 = memberContribution;
+        let key = 'contribution' + json1['contributionKey'];
+        json1['docType'] = 'contribution';
 
-        console.log('##### createContribution : ' + JSON.stringify(json));
+        console.log('##### createContribution : ' + JSON.stringify(json1));
 
         // Confirm the Member exists
-        let ngoKey = 'member' + json['ssn'];
+        let ngoKey = 'member' + json1['ssn'];
         let ngoQuery = await stub.getState(ngoKey);
         if (!ngoQuery.toString()) {
-          throw new Error('##### createContribution - Cannot create contribution as the Member does not exist: ' + json['ssn']);
+          throw new Error('##### createContribution - Cannot create contribution as the Member does not exist: ' + json1['ssn']);
         }
 
         // Confirm the Employer exists
-        let donorKey = 'employer' + json['contractNumber'];
+        let donorKey = 'employer' + json1['contractNumber'];
         let donorQuery = await stub.getState(donorKey);
         if (!donorQuery.toString()) {
-          throw new Error('##### createContribution - Cannot create contribution as the Employer does not exist: ' + json['contractNumber']);
+          throw new Error('##### createContribution - Cannot create contribution as the Employer does not exist: ' + json1['contractNumber']);
         }
 
         // Check if the Contribution already exists
         let donationQuery = await stub.getState(key);
         if (donationQuery.toString()) {
-          throw new Error('##### createContribution - This Contribution already exists: ' + json['contributionKey']);
+          throw new Error('##### createContribution - This Contribution already exists: ' + json1['contributionKey']);
         }
 
-        await stub.putState(key, Buffer.from(JSON.stringify(json)));
+        await stub.putState(key, Buffer.from(JSON.stringify(json1)));
         console.log('============= END : createContribution ===========');
 
       }else {
-        throw new Error("Contribution fund exhausted, make sure you have enough balance before contribution for employer: "+json["contractNumber"])
+        throw new Error("Contribution fund exhausted, make sure you have enough balance before contribution for employer: "+json1["contractNumber"])
       }
 
     }
