@@ -350,7 +350,7 @@ app.get('/employers/:contractNumber/members', awaitHandler(async (req, res) => {
 app.get('/plans', awaitHandler(async (req, res) => {
 	logger.info('================ GET on plan');
 	let args = {};
-	let fcn = "queryAllPlans";
+	let fcn = "createContributionEmployer";
 
 	logger.info('##### GET on Member - username : ' + username);
 	logger.info('##### GET on Member - userOrg : ' + orgName);
