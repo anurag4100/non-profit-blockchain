@@ -829,6 +829,9 @@ let Chaincode = class {
         console.log('##### createContributionEmployer - Amount for member is: ' + amount);
         grossAmount +=amount;
 
+        if (grossAmount > employerContribAmount){
+            throw new Error("Gross amount exceeds employer contrib amount.")
+        }
         let totalNumberOfInvestments = member.investments.length;
         for (let j = 0; j < totalNumberOfInvestments; j++){
           member.investments[j].dollarVal = amount/totalNumberOfInvestments;
@@ -838,7 +841,6 @@ let Chaincode = class {
           docType: 'contribution',
           ssn: member['ssn'],
           contractNumber: contractNumber,
-          contributionKey: n,
           contributionDate: new Date(),
           investments: member.investments
         };
@@ -851,7 +853,7 @@ let Chaincode = class {
         // args is passed as a JSON string
         let json1 = memberContribution;
         let today = new Date();
-        let key = 'contribution' + json1['contributionKey']+':'+today.getHours()+':'+today.getMinutes();
+        let key = 'contribution'+':'+today.getHours()+':'+today.getMinutes();
         json1['docType'] = 'contribution';
 
         console.log('##### createContribution : ' + JSON.stringify(json1));

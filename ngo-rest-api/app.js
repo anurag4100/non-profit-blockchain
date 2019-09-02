@@ -404,6 +404,27 @@ app.get('/members/:ssn/contributions', awaitHandler(async (req, res) => {
 	res.send(message);
 }));
 
+// GET total account balance of a specific member
+app.get('/members/:ssn/balance', awaitHandler(async (req, res) => {
+    logger.info('================ GET on Member by ID');
+    logger.info('SSN: ' + req.params);
+    let args = req.params;
+    let fcn = "queryContributionsByMember";
+    let allContributions = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+    logger.info('All contribs: ' + allContributions);
+    let totalBalance = 0;
+    for (let n = 0; n < allContributions.length; n++) {
+        for (let m=0; m< allContributions[n].investments.length;m++){
+            totalBalance += allContributions[n].investments[m].dollarVal;
+        }
+    }
+    let response = {
+        totalBalance : totalBalance,
+        allContributions : allContributions
+    }
+    res.send(response);
+}));
+
 // GET a specific Employer
 app.get('/employers/:contractNumber', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Employer by ID');
