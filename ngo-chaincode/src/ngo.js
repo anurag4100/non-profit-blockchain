@@ -798,7 +798,7 @@ let Chaincode = class {
 
   async createContributionEmployer(stub, args) {
     console.log('============= START : createContributionEmployer ===========');
-    console.log('##### createContributionEmployer arguments: ' + JSON.stringify(args));
+    //console.log('##### createContributionEmployer arguments: ' + JSON.stringify(args));
     // args is passed as a JSON string
     let tempJson = "{\"contractNumber\": \"123001\",\"contributionAmount\":\"8000\"}";
     let json = JSON.parse(tempJson);
