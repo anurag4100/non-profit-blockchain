@@ -254,6 +254,26 @@ app.post('/employers', awaitHandler(async (req, res) => {
 	res.send(message);
 }));
 
+// Create contribution transaction
+app.post('/employers/:contractNumber/contribution', awaitHandler(async (req, res) => {
+	logger.info('================ POST on employers');
+	var args = req.body;
+	var fcn = "createContributionEmployer";
+
+	logger.info('##### POST on Member - username : ' + username);
+	logger.info('##### POST on Member - userOrg : ' + orgName);
+	logger.info('##### POST on Member - channelName : ' + channelName);
+	logger.info('##### POST on Member - chaincodeName : ' + chaincodeName);
+	logger.info('##### POST on Member - fcn : ' + fcn);
+	logger.info('##### POST on Member - args : ' + JSON.stringify(args));
+	logger.info('##### POST on Member - peers : ' + peers);
+
+	let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	res.send(message);
+}));
+
+
+
 // POST plan
 app.post('/plans', awaitHandler(async (req, res) => {
 	logger.info('================ POST on plan');
