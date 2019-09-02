@@ -815,6 +815,7 @@ let Chaincode = class {
     for (let n = 0; n < allMembers.length; n++) {
       if (grossAmount < employerContribAmount) {
         let member = allMembers[n];
+        return member.investments;
         console.log('##### createContributionEmployer - Processing for member :' + member["ssn"]);
         let contribAndDeferral = member["contribAndDeferral"];
         //let deferralPercent = contribAndDeferral["electiveDeferral"];
@@ -830,7 +831,8 @@ let Chaincode = class {
         }
         console.log('##### createContributionEmployer - Amount for member is: ' + amount);
         grossAmount +=amount;
-        let totalNumberOfInvestments = member["investments"].length;
+        let memberInvestments = member.investments;
+        let totalNumberOfInvestments = memberInvestments.length;
         for (let j = 0; j < totalNumberOfInvestments; j++){
           member.investments[j].dollarVal = amount/totalNumberOfInvestments;
         }
