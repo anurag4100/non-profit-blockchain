@@ -812,7 +812,7 @@ let Chaincode = class {
       if (grossAmount < employerContribAmount) {
         let member = allMembers[n];
         console.log('##### createContributionEmployer - Processing for member :' + member["ssn"]);
-        let deferralPercent = member["contribAndDeferral"]["electiveDeferral"];
+        let deferralPercent = member.contribAndDeferral.electiveDeferral;
         console.log('##### createContributionEmployer - Elective Deferral for member is: ' + deferralPercent);
         let salary = member["salary"];
         console.log('##### createContributionEmployer - Salary for member is: ' + salary);
@@ -971,6 +971,22 @@ let Chaincode = class {
     let queryString = '{"selector": {"docType": "donation", "ngoRegistrationNumber": "' + json['ngoRegistrationNumber'] + '"}}';
     return queryByString(stub, queryString);
   }
+
+    /**
+     * Retrieves members for a specfic employer
+     *
+     * @param {*} stub
+     * @param {*} args
+     */
+    async queryMembersForEmployer(stub, args) {
+        console.log('============= START : queryMembersForEmployer ===========');
+        console.log('##### queryMembersForEmployer arguments: ' + JSON.stringify(args));
+
+        // args is passed as a JSON string
+        let json = JSON.parse(args);
+        let queryString = '{"selector": {"docType": "member", "contractNumber": "' + json['contractNumber'] + '"}}';
+        return queryByString(stub, queryString);
+    }
 
   /**
    * Retrieves all donations
