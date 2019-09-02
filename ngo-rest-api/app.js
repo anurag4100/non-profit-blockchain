@@ -331,7 +331,7 @@ app.get('/employers', awaitHandler(async (req, res) => {
 // GET members for a particular employer
 app.get('/employers/:contractNumber/members', awaitHandler(async (req, res) => {
     logger.info('================ GET on employer');
-    let args = {};
+    let args = req.params;
     let fcn = "queryMembersForEmployer";
 
     logger.info('##### GET on Member - username : ' + username);
