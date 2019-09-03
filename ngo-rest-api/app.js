@@ -427,7 +427,7 @@ app.get('/employers/:contractNumber', awaitHandler(async (req, res) => {
 	let allMembers = await query.queryChaincode(peers, channelName, chaincodeName, args, "queryMembersForEmployer", username, orgName);
 	logger.info('Anurag - All members: '+JSON.stringify(allMembers))
 	for (let i=0; i < allMembers.length; i++){
-		let member = allMembers[i]['Record'];
+		let member = allMembers[i];
 		let result = await make_api_call(member.ssn);
 		employerBalance += result.totalBalance;
 	}
