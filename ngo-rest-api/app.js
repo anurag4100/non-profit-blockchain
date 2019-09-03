@@ -431,7 +431,8 @@ app.get('/employers/:contractNumber', awaitHandler(async (req, res) => {
 		let result = await make_api_call(member.ssn);
 		employerBalance += result.totalBalance;
 	}
-	employer.totalBalance = employerBalance;
+	logger.info('Anurag - Total employer balance is : '+JSON.stringify(employerBalance))
+	employer[0]['totalAsset'] = employerBalance;
 	res.send(employer);
 }));
 
