@@ -33,6 +33,7 @@ var util = require('util');
 var app = express();
 var cors = require('cors');
 var hfc = require('fabric-client');
+const rp = require('request-promise');
 const uuidv4 = require('uuid/v4');
 
 var connection = require('./connection.js');
@@ -385,25 +386,6 @@ app.get('/members/:ssn', awaitHandler(async (req, res) => {
  	res.send(message);
 }));
 
-// GET contributions of a specific member
-app.get('/members/:ssn/contributions', awaitHandler(async (req, res) => {
-	logger.info('================ GET on Member by ID');
-	logger.info('SSN: ' + req.params);
-	let args = req.params;
-	let fcn = "queryContributionsByMember";
-
-	logger.info('##### GET on Member by username - username : ' + username);
-	logger.info('##### GET on Member by username - userOrg : ' + orgName);
-	logger.info('##### GET on Member by username - channelName : ' + channelName);
-	logger.info('##### GET on Member by username - chaincodeName : ' + chaincodeName);
-	logger.info('##### GET on Member by username - fcn : ' + fcn);
-	logger.info('##### GET on Member by username - args : ' + JSON.stringify(args));
-	logger.info('##### GET on Member by username - peers : ' + peers);
-
-	let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
-	res.send(message);
-}));
-
 // GET total account balance of a specific member
 app.get('/members/:ssn/balance', awaitHandler(async (req, res) => {
     logger.info('================ GET on Member by ID');
@@ -440,9 +422,25 @@ app.get('/employers/:contractNumber', awaitHandler(async (req, res) => {
 	logger.info('##### GET on Member by username - args : ' + JSON.stringify(args));
 	logger.info('##### GET on Member by username - peers : ' + peers);
 
-	let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
-	res.send(message);
+	let employer = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	let employerBalance = 0;
+	let allMembers = await query.queryChaincode(peers, channelName, chaincodeName, args, "queryMembersForEmployer", username, orgName);
+	for (let i=0; i < allMembers.length; i++){
+		let member = allMembers[i].record;
+		let result = await make_api_call(member.ssn);
+		employerBalance += result.totalBalance;
+	}
+	employer.set('totalBalance',employerBalance);
+	res.send(employer);
 }));
+
+function make_api_call(id){
+	return rp({
+		url : "http://blockchai-blockcha-65xd5w9tiogr-1652009954.us-east-1.elb.amazonaws.com/members/"+${id}+"/balance",
+		method : 'GET',
+		json : true
+	})
+}
 
 // GET a specific Plan
 app.get('/plans/:planId', awaitHandler(async (req, res) => {
