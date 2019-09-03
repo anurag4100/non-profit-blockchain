@@ -431,7 +431,7 @@ app.get('/employers/:contractNumber', awaitHandler(async (req, res) => {
 		let result = await make_api_call(member.ssn);
 		employerBalance += result.totalBalance;
 	}
-	employer.set('totalBalance',employerBalance);
+	employer.totalBalance = employerBalance;
 	res.send(employer);
 }));
 
