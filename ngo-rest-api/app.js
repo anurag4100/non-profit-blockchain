@@ -436,7 +436,7 @@ app.get('/employers/:contractNumber', awaitHandler(async (req, res) => {
 
 function make_api_call(id){
 	return rp({
-		url : "http://blockchai-blockcha-65xd5w9tiogr-1652009954.us-east-1.elb.amazonaws.com/members/"+${id}+"/balance",
+		url : "http://blockchai-blockcha-65xd5w9tiogr-1652009954.us-east-1.elb.amazonaws.com/members/"+id+"/balance",
 		method : 'GET',
 		json : true
 	})
