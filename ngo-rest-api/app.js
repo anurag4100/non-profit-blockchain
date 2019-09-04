@@ -352,7 +352,7 @@ app.get('/plans', awaitHandler(async (req, res) => {
 	logger.info('================ GET on plan');
 	let args = {};
 	//temp changes
-	let fcn = "createContributionEmployer";
+	let fcn = "queryAllPlans";
 
 	logger.info('##### GET on Member - username : ' + username);
 	logger.info('##### GET on Member - userOrg : ' + orgName);
