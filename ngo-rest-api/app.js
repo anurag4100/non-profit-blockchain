@@ -480,7 +480,7 @@ app.get('/height', awaitHandler(async (req, res) => {
 		'    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \\\n' +
 		'    cli peer channel getinfo -c mychannel', {silent:false}).stdout;
 	var words = message.split(':');
-	res.send(words[0]);
+	res.send(words[1]);
 }));
 /************************************************************************************
  * NGO methods
