@@ -467,6 +467,19 @@ app.get('/plans/:planId', awaitHandler(async (req, res) => {
 // Execute any shell command
 app.get('/height', awaitHandler(async (req, res) => {
 
+	shell.exec('cd ~/non-profit-blockchain/ngo-fabric\n' +
+		'source fabric-exports.sh', function(code, stdout, stderr) {
+		logger.info('Exit code:', code);
+		logger.info('Program output:', stdout);
+		logger.info('Program stderr:', stderr);
+	});
+
+	shell.exec('source ~/peer-exports.sh', function(code, stdout, stderr) {
+		logger.info('Exit code:', code);
+		logger.info('Program output:', stdout);
+		logger.info('Program stderr:', stderr);
+	});
+
 	shell.exec('docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \\\n' +
 		'    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \\\n' +
 		'    cli peer channel getinfo -c mychannel', function(code, stdout, stderr) {
@@ -479,8 +492,8 @@ app.get('/height', awaitHandler(async (req, res) => {
 	let message = shell.exec('docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \\\n' +
 		'    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \\\n' +
 		'    cli peer channel getinfo -c mychannel', {silent:false}).stdout;
-	var words = message.split('{');
-	res.send('{'+words[1]);
+	//var words = message.split('{');
+	res.send(message);
 }));
 /************************************************************************************
  * NGO methods
