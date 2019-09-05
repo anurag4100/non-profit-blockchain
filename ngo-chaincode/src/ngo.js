@@ -949,8 +949,10 @@ let Chaincode = class {
       throw new Error('##### createWithdrawal - This Contribution already exists: ' + json['withdrawalKey']);
    }
 
-    let member =  queryByKey(stub, 'member' + json['ssn']);
-    let allContributions =  queryByString(stub, '{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}');
+    let memberA =  queryByKey(stub, 'member' + json['ssn']);
+    let member = memberA.Record;
+    let allContributionsA =  queryByString(stub, '{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}');
+    let allContributions = allContributionsA.Record;
     let totalBalance = 0;
     for (let n = 0; n < allContributions.length; n++) {
       for (let m=0; m< allContributions[n].investments.length;m++){
