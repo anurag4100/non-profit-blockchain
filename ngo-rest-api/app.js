@@ -237,6 +237,24 @@ app.post('/members', awaitHandler(async (req, res) => {
 	res.send(message);
 }));
 
+// POST member
+app.post('/members/:ssn/withdrawal', awaitHandler(async (req, res) => {
+    logger.info('================ POST on Member');
+    var args = req.body;
+    var fcn = "createWithdrawal";
+
+    logger.info('##### POST on Member - username : ' + username);
+    logger.info('##### POST on Member - userOrg : ' + orgName);
+    logger.info('##### POST on Member - channelName : ' + channelName);
+    logger.info('##### POST on Member - chaincodeName : ' + chaincodeName);
+    logger.info('##### POST on Member - fcn : ' + fcn);
+    logger.info('##### POST on Member - args : ' + JSON.stringify(args));
+    logger.info('##### POST on Member - peers : ' + peers);
+
+    let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+    res.send(message);
+}));
+
 // POST employer
 app.post('/employers', awaitHandler(async (req, res) => {
 	logger.info('================ POST on employers');
@@ -400,8 +418,21 @@ app.get('/members/:ssn/balance', awaitHandler(async (req, res) => {
             totalBalance += allContributions[n].investments[m].dollarVal;
         }
     }
+
+    let allWithdrawals = await query.queryChaincode(peers, channelName, chaincodeName, args, "queryWithdrawalByMember", username, orgName);
+    let totalWithdrawal = 0;
+    if (allWithdrawals.toString()){
+        logger.info('All contribs: ' + allWithdrawals);
+        for (let n = 0; n < allWithdrawals.length; n++) {
+            for (let m=0; m< allWithdrawals[n].investments.length;m++){
+                totalWithdrawal += allWithdrawals[n].investments[m].dollarVal;
+            }
+        }
+    }
+
+
     let response = {
-        totalBalance : totalBalance,
+        totalBalance : totalBalance-totalWithdrawal,
         allContributions : allContributions
     }
     res.send(response);
@@ -467,7 +498,7 @@ app.get('/plans/:planId', awaitHandler(async (req, res) => {
 // Execute any shell command
 app.get('/height', awaitHandler(async (req, res) => {
 
-	shell.exec('cd ~/non-profit-blockchain/ngo-fabric\n' +
+	/*shell.exec('cd ~/non-profit-blockchain/ngo-fabric\n' +
 		'source fabric-exports.sh', function(code, stdout, stderr) {
 		logger.info('Exit code:', code);
 		logger.info('Program output:', stdout);
@@ -478,7 +509,7 @@ app.get('/height', awaitHandler(async (req, res) => {
 		logger.info('Exit code:', code);
 		logger.info('Program output:', stdout);
 		logger.info('Program stderr:', stderr);
-	});
+	});*/
 
 	shell.exec('docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \\\n' +
 		'    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \\\n' +

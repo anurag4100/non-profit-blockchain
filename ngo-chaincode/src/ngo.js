@@ -907,6 +907,15 @@ let Chaincode = class {
     return queryByString(stub, queryString);
   }
 
+  async queryWithdrawalByMember(stub, args) {
+    console.log('============= START : queryContributionsByMember ===========');
+    console.log('##### queryContributionsByMember arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let queryString = '{"selector": {"docType": "withdrawal", "ssn": "' + json['ssn'] + '"}}';
+    return queryByString(stub, queryString);
+  }
   //Create withdrawal for  individual member
 
   async createWithdrawal(stub, args) {
@@ -940,7 +949,31 @@ let Chaincode = class {
       throw new Error('##### createWithdrawal - This Contribution already exists: ' + json['withdrawalKey']);
    }
 
-    await stub.putState(key, Buffer.from(JSON  .stringify(json)));
+    let member = await  this.queryMember(stub,args);
+
+    let allContributions = await  this.queryContributionsByMember(stub,args);
+    let totalBalance = 0;
+    for (let n = 0; n < allContributions.length; n++) {
+      for (let m=0; m< allContributions[n].investments.length;m++){
+        totalBalance += allContributions[n].investments[m].dollarVal;
+      }
+    }
+
+    if (json.withdrawalAmount > totalBalance){
+      throw new Error("Withdrawal amount exceeds available balance.")
+    }
+    for (let i=0; i<member.investments.length; i++){
+      member.investments[i].dollarVal = member.investments[i].dollarVal - json.withdrawalAmount / member.investments.length;
+    }
+    let memberWithdrawal = {
+      docType: 'withdrawal',
+      ssn: member['ssn'],
+      contractNumber: json.contractNumber,
+      withdrawalDate: new Date(),
+      investments: member.investments
+    };
+
+    await stub.putState(key, Buffer.from(JSON  .stringify(memberWithdrawal)));
     console.log('============= END : createWithdrawal ===========');
   }
 
