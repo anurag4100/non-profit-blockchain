@@ -523,8 +523,8 @@ app.get('/height', awaitHandler(async (req, res) => {
 	let message = shell.exec('docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \\\n' +
 		'    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \\\n' +
 		'    cli peer channel getinfo -c mychannel', {silent:false}).stdout;
-	//var words = message.split('{');
-	res.send(message);
+	var words = message.split('{');
+	res.send(words);
 }));
 /************************************************************************************
  * NGO methods
