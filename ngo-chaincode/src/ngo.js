@@ -950,7 +950,7 @@ let Chaincode = class {
    }
 
     let memberA =  queryByKey(stub, 'member' + json['ssn']);
-    let member = memberA.Record;
+    let member = memberA[0]['Record'];
     let allContributionsA =  queryByString(stub, '{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}');
     let allContributions = allContributionsA.Record;
     let totalBalance = 0;
