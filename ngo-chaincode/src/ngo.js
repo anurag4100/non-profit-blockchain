@@ -952,7 +952,7 @@ let Chaincode = class {
     
 	let memberA = await stub.getState('member' + json['ssn']);
     throw new Error("This is how the member is looking: "+memberA.toString());
-    let member = memberA[0]['Record'];
+    let member = memberA;
     //let allContributionsA =  queryByString(stub, '{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}');
 	let allContributionsA = await stub.getState('{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}');
     let allContributions = allContributionsA;
