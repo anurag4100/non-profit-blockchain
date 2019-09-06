@@ -951,10 +951,11 @@ let Chaincode = class {
 
     
 	let memberA = await stub.getState('member' + json['ssn']);
-    //throw new Error("This is how the member is looking: "+memberA.toString());
-    let member = memberA;
+    //throw new Error("This is how the member is looking: "+memberA[0].tot.toString());
+    let member = memberA[0];
     //let allContributionsA =  queryByString(stub, '{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}');
 	let allContributionsA = await stub.getState('{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}');
+	throw new Error("This is how the contributions is looking: "+allContributionsA.toString());
     let allContributions = allContributionsA;
     let totalBalance = 0;
     for (let n = 0; n < allContributions.length; n++) {
