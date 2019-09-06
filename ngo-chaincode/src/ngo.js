@@ -957,7 +957,7 @@ let Chaincode = class {
 	let queryString2 = '{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}';
 	//let allContributionsA = await stub.getState(queryString2);
 	let allContributionsA = await queryByString(stub, queryString2);
-	throw new Error("This is how the contributions is looking: "+JSON.stringify(allContributionsA));
+	throw new Error("This is how the contributions is looking: "+JSON.stringify(allContributionsA.toString()));
     let allContributions = allContributionsA;
     let totalBalance = 0;
     for (let n = 0; n < allContributions.length; n++) {
