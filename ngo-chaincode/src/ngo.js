@@ -958,11 +958,11 @@ let Chaincode = class {
 	//let allContributionsA = await stub.getState(queryString2);
 	let allContributionsA = await queryByString(stub, queryString2);
 	//throw new Error("This is how the contributions is looking: "+JSON.stringify(allContributionsA.toString()));
-    let allContributions = allContributionsA.toString();
+    let allContributions = JSON.stringify(allContributionsA.toString()));
     let totalBalance = 0;
     for (let n = 0; n < allContributions.length; n++) {
-      for (let m=0; m< allContributions[n]['Record'].investments.length;m++){
-        totalBalance += allContributions[n]['Record'].investments[m].dollarVal;
+      for (let m=0; m< allContributions[n]['Record']['investments'].length;m++){
+        totalBalance += allContributions[n]['Record']['investments'][m].dollarVal;
       }
     }
 
