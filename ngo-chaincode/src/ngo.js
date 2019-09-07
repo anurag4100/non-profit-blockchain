@@ -961,8 +961,8 @@ let Chaincode = class {
     let allContributions = JSON.stringify(allContributionsA.toString());
     let buf = Buffer.from(JSON.stringify(allContributionsA));
     let temp = JSON.parse(buf.toString());
-
-    throw new Error("This is how the Record is looking: "+JSON.stringify(temp));
+    console.error("error trying");
+    throw new Error("## all contrib: "+allContributions);
     let totalBalance = 0;
     for (let n = 0; n < allContributions.length; n++) {
       for (let m=0; m< allContributions[n]['Record']['investments'].length;m++){
