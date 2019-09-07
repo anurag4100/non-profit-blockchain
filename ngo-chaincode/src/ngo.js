@@ -962,14 +962,12 @@ let Chaincode = class {
    /* let buf = Buffer.from(JSON.stringify(allContributionsA));
     let temp = JSON.parse(buf.toString());*/
    let temp = JSON.parse(allContributions);
-    function replacer(key, value) {
-      return value.replace(/[^\w\s]/gi, '');
-    }
 
-    //var foo = {"a":"1","b":2};
-    let jsonString = JSON.stringify(temp, replacer);
-
-    throw new Error("## one contrib: "+jsonString);
+   let newTemp = {
+     trial : "trial",
+     temp: temp
+   }
+    throw new Error("## one contrib: "+JSON.stringify(newTemp));
     let totalBalance = 0;
     for (let n = 0; n < allContributions.length; n++) {
       for (let m=0; m< allContributions[n]['Record']['investments'].length;m++){
