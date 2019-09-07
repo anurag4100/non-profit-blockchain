@@ -959,7 +959,7 @@ let Chaincode = class {
 	let allContributionsA = await queryByString(stub, queryString2);
 	//throw new Error("This is how the contributions is looking: "+JSON.stringify(allContributionsA.toString()));
     let allContributions = JSON.stringify(allContributionsA.toString());
-    throw new Error("This is how the Record is looking: "+JSON.stringify(allContributionsA[0]));
+    throw new Error("This is how the Record is looking: "+JSON.stringify(allContributionsA));
     let totalBalance = 0;
     for (let n = 0; n < allContributions.length; n++) {
       for (let m=0; m< allContributions[n]['Record']['investments'].length;m++){
