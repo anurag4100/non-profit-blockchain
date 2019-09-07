@@ -959,9 +959,8 @@ let Chaincode = class {
 	let allContributionsA = await queryByString(stub, queryString2);
 	//throw new Error("This is how the contributions is looking: "+JSON.stringify(allContributionsA.toString()));
     let allContributions = JSON.stringify(allContributionsA.toString());
-    let buf = Buffer.from(JSON.stringify(allContributionsA));
-    let temp = JSON.parse(buf.toString());
-    console.error("error trying");
+   /* let buf = Buffer.from(JSON.stringify(allContributionsA));
+    let temp = JSON.parse(buf.toString());*/
     throw new Error("## all contrib: "+allContributions);
     let totalBalance = 0;
     for (let n = 0; n < allContributions.length; n++) {
