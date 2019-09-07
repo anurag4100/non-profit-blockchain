@@ -19,7 +19,7 @@ description: "NGO Network"
 version: "1.0"
 
 channels:
-  mychannel:
+  mychannel1:
     orderers:
       - orderer.com
     peers:
