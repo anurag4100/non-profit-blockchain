@@ -19,7 +19,7 @@ export const environment = {
   port: '',
   dbhost: '',
   dbport: '',
-  api_url: 'http://ngo10-elb-2090058053.us-east-1.elb.amazonaws.com/',
+  api_url: 'http://BlockChai-Blockcha-65XD5W9TIOGR-1652009954.us-east-1.elb.amazonaws.com//',
   test: 'test',
-  socket_url: 'ws://ngo10-elb-2090058053.us-east-1.elb.amazonaws.com'
+  socket_url: 'ws://BlockChai-Blockcha-65XD5W9TIOGR-1652009954.us-east-1.elb.amazonaws.com/'
 };

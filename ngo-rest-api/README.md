@@ -99,7 +99,7 @@ config.json should look something like this:
 {
     "host":"localhost",
     "port":"3000",
-    "channelName":"mychannel",
+    "channelName":"mychannel1",
     "chaincodeName":"ngo",
     "eventWaitTime":"30000",
     "peers":[
