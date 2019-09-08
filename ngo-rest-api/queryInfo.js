@@ -1,3 +1,4 @@
+/*
 var util = require('util');
 var helper = require('./connection.js');
 var logger = helper.getLogger('Queryinfo');
@@ -20,4 +21,4 @@ var queryinfo= async function(username,orgName){
     return responses;
 
 }
-exports.queryinfo = queryinfo;
+exports.queryinfo = queryinfo;*/
