@@ -17,7 +17,7 @@ description: "NGO Donation and Spend Tracking Network"
 version: "1.0"
 
 channels:
-  mychannel:
+  mychannel1:
     orderers:
       - orderer.example.com
     peers:
