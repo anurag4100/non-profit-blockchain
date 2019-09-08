@@ -2,7 +2,7 @@ var util = require('util');
 var helper = require('./connection.js');
 var logger = helper.getLogger('Query');
 
-var queryinfo= async function(){
+var queryinfo= async function(username,orgName){
     var client = await helper.getClientForOrg(orgName, username);
     var channel = client.getChannel("mychannel1");
     if(!channel) {
