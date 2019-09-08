@@ -4,6 +4,7 @@ var logger = helper.getLogger('Query');
 
 var queryinfo= async function(username,orgName){
     var client = await helper.getClientForOrg(orgName, username,peers);
+    log.info(orgName,username,peers)
     var channel = client.getChannel("mychannel1");
     if(!channel) {
         let message = util.format('##### queryChaincode - Channel %s was not defined in the connection profile', channelName);
