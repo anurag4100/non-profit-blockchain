@@ -251,6 +251,18 @@ app.post('/members/:ssn/withdrawal', awaitHandler(async (req, res) => {
     logger.info('##### POST on Member - args : ' + JSON.stringify(args));
     logger.info('##### POST on Member - peers : ' + peers);
 
+	let fcn2 = "queryContributionsByMember";
+	let allContributions = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn2, username, orgName);
+	logger.info('All contribs: ' + allContributions);
+	let totalBalance = 0;
+	for (let n = 0; n < allContributions.length; n++) {
+		for (let m=0; m< allContributions[n].investments.length;m++){
+			totalBalance += allContributions[n].investments[m].dollarVal;
+		}
+	}
+	if (args.withdrawalAmount > totalBalance){
+		throw new Error("withdrawal amount is more than available balance.");
+	}
     let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
     res.send(message);
 }));

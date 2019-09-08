@@ -949,35 +949,9 @@ let Chaincode = class {
       throw new Error('##### createWithdrawal - This Contribution already exists: ' + json['withdrawalKey']);
    }
 
-    
+    //due to chaincode issues i´ll put the business logic in rest
 	let memberA = await stub.getState('member' + json['ssn']);
-    //throw new Error("This is how the member is looking: "+memberA[0].tot.toString());
     let member = memberA;
-    //let allContributionsA =  queryByString(stub, '{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}');
-	let queryString2 = '{"selector": {"docType": "contribution", "ssn": "' + json['ssn'] + '"}}';
-	//let allContributionsA = await stub.getState(queryString2);
-	let allContributionsA = await queryByString(stub, queryString2);
-	//throw new Error("This is how the contributions is looking: "+JSON.stringify(allContributionsA.toString()));
-    let allContributions = JSON.stringify(allContributionsA.toString());
-   /* let buf = Buffer.from(JSON.stringify(allContributionsA));
-    let temp = JSON.parse(buf.toString());*/
-   /*let temp = JSON.parse(allContributions);
-
-   let newTemp = {
-     trial : "trial",
-     temp: temp
-   }
-    throw new Error("## one contrib: "+JSON.stringify(newTemp));*/
-    let totalBalance = 0;
-    for (let n = 0; n < allContributions.length; n++) {
-      for (let m=0; m< allContributions[n]['Record']['investments'].length;m++){
-        totalBalance += allContributions[n]['Record']['investments'][m].dollarVal;
-      }
-    }
-
-    if (json.withdrawalAmount > totalBalance){
-      throw new Error("Withdrawal amount exceeds available balance.")
-    }
     for (let i=0; i<member.investments.length; i++){
       member.investments[i].dollarVal = member.investments[i].dollarVal - json.withdrawalAmount / member.investments.length;
     }
