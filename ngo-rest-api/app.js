@@ -559,7 +559,7 @@ app.get('/height', awaitHandler(async (req, res) => {
 	var request = {
 		target : peers
 	};
-	log.info(request);
+	logger.info(request);
 	let responses = await channel.queryInfo(request);
 	logger.info(responses)
 	res.send(responses);
