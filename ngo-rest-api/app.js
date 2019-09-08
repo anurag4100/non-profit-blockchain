@@ -59,7 +59,7 @@ app.use(bodyParser.urlencoded({
 	extended: false
 }));
 app.use(function(req, res, next) {
-	logger.info(' ##### New request for URL %s',req.originalUrl);
+	//logger.info(' ##### New request for URL %s',req.originalUrl);
 	return next();
 });
 
@@ -270,11 +270,12 @@ app.post('/members/:ssn/withdrawal', awaitHandler(async (req, res) => {
 	let member = memberA[0];
 	logger.info("Member in after post/withdrawal :"+JSON.stringify(member));
 	for (let i=0; i<member.investments.length; i++){
-		member.investments[i].dollarVal = member.investments[i].dollarVal - args.withdrawalAmount / member.investments.length;
+		member.investments[i].dollarVal = args.withdrawalAmount / member.investments.length;
 	}
 
 	let memberWithdrawal = {
 		docType: 'withdrawal',
+		withdrawalKey: new Date(),
 		ssn: member['ssn'],
 		contractNumber: member['contractNumber'],
 		withdrawalDate: new Date(),
@@ -453,7 +454,7 @@ app.get('/members/:ssn/balance', awaitHandler(async (req, res) => {
     let allWithdrawals = await query.queryChaincode(peers, channelName, chaincodeName, args, "queryWithdrawalByMember", username, orgName);
     let totalWithdrawal = 0;
     if (allWithdrawals.toString()){
-        logger.info('All contribs: ' + allWithdrawals);
+        logger.info('All withdrawals: ' + allWithdrawals);
         for (let n = 0; n < allWithdrawals.length; n++) {
             for (let m=0; m< allWithdrawals[n].investments.length;m++){
                 totalWithdrawal += allWithdrawals[n].investments[m].dollarVal;
