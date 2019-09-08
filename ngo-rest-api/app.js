@@ -265,7 +265,7 @@ app.post('/members/:ssn/withdrawal', awaitHandler(async (req, res) => {
 	}
 
 	let fcn3 = "queryMember";
-    let memberA = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn3, username, orgName);
+    let memberA = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn3, username, orgName);
     logger.info("Member in Actual post/withdrawal :"+JSON.stringify(memberA));
     let memberJ = JSON.parse(memberA);
 	let member = memberJ[0];
