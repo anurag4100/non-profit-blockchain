@@ -41,6 +41,7 @@ var query = require('./query.js');
 var invoke = require('./invoke.js');
 var blockListener = require('./blocklistener.js');
 var shell = require('shelljs');
+var queryinfo=require('./queryInfo.js');
 hfc.addConfigFile('config.json');
 var host = 'localhost';
 var port = 3000;
@@ -550,14 +551,9 @@ app.get('/height', awaitHandler(async (req, res) => {
 		logger.info('Program output:', stdout);
 		logger.info('Program stderr:', stderr);
 	});*/
+	let message=await queryinfo.queryinfo();
+	res.send(message);
 
-	logger.info("code was here");
-	let message = shell.exec('docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \\\
-        -e "CORE_PEER_ADDRESS=nd-aifmnorxazcljgnb4yqbhv3dh4.m-n4p7n7upinefda7lppmh2w72zm.n-gyrb47bc6bacpa6ywexlbbb6ui.managedblockchain.us-east-1.amazonaws.com:30009" -e "CORE_PEER_LOCALMSPID=m-N4P7N7UPINEFDA7LPPMH2W72ZM" -e "CORE_PEER_MSPCONFIGPATH=/opt/home/admin-msp" \\\
-        cli peer channel getinfo -c mychannel', {silent:false});
-	var newStr = message.replace('Blockchain info: ', '');
-	log.info(newStr);
-	res.send(newStr);
 }));
 /************************************************************************************
  * NGO methods
