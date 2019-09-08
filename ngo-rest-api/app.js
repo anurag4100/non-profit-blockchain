@@ -267,8 +267,7 @@ app.post('/members/:ssn/withdrawal', awaitHandler(async (req, res) => {
 	let fcn3 = "queryMember";
     let memberA = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn3, username, orgName);
     logger.info("Member in Actual post/withdrawal :"+JSON.stringify(memberA));
-    let memberJ = JSON.parse(memberA);
-	let member = memberJ[0];
+	let member = memberA[0];
 	logger.info("Member in after post/withdrawal :"+JSON.stringify(member));
 	for (let i=0; i<member.investments.length; i++){
 		member.investments[i].dollarVal = member.investments[i].dollarVal - args.withdrawalAmount / member.investments.length;
