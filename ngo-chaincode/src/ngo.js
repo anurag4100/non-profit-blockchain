@@ -948,22 +948,7 @@ let Chaincode = class {
     if (donationQuery.toString()) {
       throw new Error('##### createWithdrawal - This Contribution already exists: ' + json['withdrawalKey']);
    }
-
-    //due to chaincode issues i´ll put the business logic in rest
-	let memberA = await stub.getState('member' + json['ssn']);
-    let member = memberA;
-    for (let i=0; i<member.investments.length; i++){
-      member.investments[i].dollarVal = member.investments[i].dollarVal - json.withdrawalAmount / member.investments.length;
-    }
-    let memberWithdrawal = {
-      docType: 'withdrawal',
-      ssn: member['ssn'],
-      contractNumber: json.contractNumber,
-      withdrawalDate: new Date(),
-      investments: member.investments
-    };
-
-    await stub.putState(key, Buffer.from(JSON  .stringify(memberWithdrawal)));
+    await stub.putState(key, Buffer.from(JSON.stringify(json)));
     console.log('============= END : createWithdrawal ===========');
   }
 

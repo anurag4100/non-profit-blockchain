@@ -263,7 +263,27 @@ app.post('/members/:ssn/withdrawal', awaitHandler(async (req, res) => {
 	if (args.withdrawalAmount > totalBalance){
 		throw new Error("withdrawal amount is more than available balance.");
 	}
-    let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+
+	let fcn3 = "queryMember";
+    let memberA = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn3, username, orgName);
+    logger.info("Member in Actual post/withdrawal :"+JSON.stringify(memberA));
+    let memberJ = JSON.parse(memberA);
+	let member = memberJ[0];
+	logger.info("Member in after post/withdrawal :"+JSON.stringify(member));
+	for (let i=0; i<member.investments.length; i++){
+		member.investments[i].dollarVal = member.investments[i].dollarVal - args.withdrawalAmount / member.investments.length;
+	}
+
+	let memberWithdrawal = {
+		docType: 'withdrawal',
+		ssn: member['ssn'],
+		contractNumber: member['contractNumber'],
+		withdrawalDate: new Date(),
+		investments: member.investments
+	};
+	logger.info("actual withdrawal object :"+JSON.stringify(memberWithdrawal));
+	let fcn4  = "createWithdrawal";
+	let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, memberWithdrawal, fcn4, username, orgName);
     res.send(message);
 }));
 
