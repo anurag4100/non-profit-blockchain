@@ -551,13 +551,13 @@ app.get('/height', awaitHandler(async (req, res) => {
 		logger.info('Program output:', stdout);
 		logger.info('Program stderr:', stderr);
 	});*/
-	log.info(username,orgName,peers)
+	log.info(username+orgName+peers);
 	var client = await connection.getClientForOrg(orgName, username,peers);
-	var channel = client.getChannel("mychannel1");
+	var channel = client.getChannel(channelName);
 	var request = {
 		target : peers
 	};
-log.info(request);
+	log.info(request);
 	let responses = await channel.queryInfo(request);
 	log.info(responses)
 	res.send(responses);
