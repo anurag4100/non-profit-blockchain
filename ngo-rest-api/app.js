@@ -511,18 +511,18 @@ app.get('/height', awaitHandler(async (req, res) => {
 		logger.info('Program stderr:', stderr);
 	});*/
 
-	shell.exec('docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \\\n' +
-		'    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \\\n' +
-		'    cli peer channel getinfo -c mychannel1', function(code, stdout, stderr) {
+	shell.exec('docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \
+    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \
+    cli peer channel getinfo -c mychannel1', function(code, stdout, stderr) {
 		logger.info('Exit code:', code);
 		logger.info('Program output:', stdout);
 		logger.info('Program stderr:', stderr);
 	});
 
 
-	let message = shell.exec('docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \\\n' +
-		'    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \\\n' +
-		'    cli peer channel getinfo -c mychannel1', {silent:false}).stdout;
+	let message = shell.exec('docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \
+    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \
+    cli peer channel getinfo -c mychannel1', {silent:false}).stdout;
 	var newStr = message.replace('Blockchain info: ', '');
 	res.send(newStr);
 }));
