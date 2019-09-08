@@ -59,7 +59,7 @@ app.use(bodyParser.urlencoded({
 	extended: false
 }));
 app.use(function(req, res, next) {
-	logger.info(' ##### New request for URL %s',req.originalUrl);
+	//logger.info(' ##### New request for URL %s',req.originalUrl);
 	return next();
 });
 
@@ -251,7 +251,39 @@ app.post('/members/:ssn/withdrawal', awaitHandler(async (req, res) => {
     logger.info('##### POST on Member - args : ' + JSON.stringify(args));
     logger.info('##### POST on Member - peers : ' + peers);
 
-    let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
+	let fcn2 = "queryContributionsByMember";
+	let allContributions = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn2, username, orgName);
+	logger.info('All contribs: ' + allContributions);
+	let totalBalance = 0;
+	for (let n = 0; n < allContributions.length; n++) {
+		for (let m=0; m< allContributions[n].investments.length;m++){
+			totalBalance += allContributions[n].investments[m].dollarVal;
+		}
+	}
+	if (args.withdrawalAmount > totalBalance){
+		throw new Error("withdrawal amount is more than available balance.");
+	}
+
+	let fcn3 = "queryMember";
+    let memberA = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn3, username, orgName);
+    logger.info("Member in Actual post/withdrawal :"+JSON.stringify(memberA));
+	let member = memberA[0];
+	logger.info("Member in after post/withdrawal :"+JSON.stringify(member));
+	for (let i=0; i<member.investments.length; i++){
+		member.investments[i].dollarVal = args.withdrawalAmount / member.investments.length;
+	}
+
+	let memberWithdrawal = {
+		docType: 'withdrawal',
+		withdrawalKey: new Date(),
+		ssn: member['ssn'],
+		contractNumber: member['contractNumber'],
+		withdrawalDate: new Date(),
+		investments: member.investments
+	};
+	logger.info("actual withdrawal object :"+JSON.stringify(memberWithdrawal));
+	let fcn4  = "createWithdrawal";
+	let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, memberWithdrawal, fcn4, username, orgName);
     res.send(message);
 }));
 
@@ -422,7 +454,7 @@ app.get('/members/:ssn/balance', awaitHandler(async (req, res) => {
     let allWithdrawals = await query.queryChaincode(peers, channelName, chaincodeName, args, "queryWithdrawalByMember", username, orgName);
     let totalWithdrawal = 0;
     if (allWithdrawals.toString()){
-        logger.info('All contribs: ' + allWithdrawals);
+        logger.info('All withdrawals: ' + allWithdrawals);
         for (let n = 0; n < allWithdrawals.length; n++) {
             for (let m=0; m< allWithdrawals[n].investments.length;m++){
                 totalWithdrawal += allWithdrawals[n].investments[m].dollarVal;
