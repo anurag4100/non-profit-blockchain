@@ -3,7 +3,7 @@ var helper = require('./connection.js');
 var logger = helper.getLogger('Query');
 
 var queryinfo= async function(username,orgName){
-    var client = await helper.getClientForOrg(orgName, username);
+    var client = await helper.getClientForOrg(orgName, username,peers);
     var channel = client.getChannel("mychannel1");
     if(!channel) {
         let message = util.format('##### queryChaincode - Channel %s was not defined in the connection profile', channelName);
@@ -11,6 +11,7 @@ var queryinfo= async function(username,orgName){
         throw new Error(message);
     }
     var request = {
+        target : peers
 
     };
     let responses = await channel.queryInfo(request);

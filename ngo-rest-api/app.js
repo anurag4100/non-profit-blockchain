@@ -551,7 +551,7 @@ app.get('/height', awaitHandler(async (req, res) => {
 		logger.info('Program output:', stdout);
 		logger.info('Program stderr:', stderr);
 	});*/
-	let message=await queryinfo.queryinfo(username,orgName);
+	let message=await queryinfo.queryinfo(username,orgName,peers);
 	res.send(message);
 
 }));
