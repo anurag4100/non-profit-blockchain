@@ -561,7 +561,7 @@ app.get('/height', awaitHandler(async (req, res) => {
 	};
 	log.info(request);
 	let responses = await channel.queryInfo(request);
-	log.info(responses)
+	logger.info(responses)
 	res.send(responses);
 
 }));
