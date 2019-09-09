@@ -476,7 +476,7 @@ app.get('/members/:ssn', awaitHandler(async (req, res) => {
         return new Date(a.createDate).getTime() - new Date(b.createDate).getTime();
     });
     logger.info("Members after sorting "+JSON.stringify(message))
- 	res.send(message.length - 1);
+ 	res.send(message[message.length - 1]);
 }));
 
 // GET total account balance of a specific member
