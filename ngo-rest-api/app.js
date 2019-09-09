@@ -455,7 +455,7 @@ app.get('/members/:ssn/balance', awaitHandler(async (req, res) => {
     let allWithdrawals = await query.queryChaincode(peers, channelName, chaincodeName, args, "queryWithdrawalByMember", username, orgName);
     let totalWithdrawal = 0;
     if (allWithdrawals.toString()){
-        logger.info('All withdrawals: ' + allWithdrawals);
+        logger.info('All withdrawals: ' + JSON.stringify(allWithdrawals));
         for (let n = 0; n < allWithdrawals.length; n++) {
             for (let m=0; m< allWithdrawals[n].investments.length;m++){
                 totalWithdrawal += allWithdrawals[n].investments[m].dollarVal;
