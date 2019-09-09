@@ -252,6 +252,9 @@ app.post('/members/:ssn/withdrawal', awaitHandler(async (req, res) => {
     logger.info('##### POST on Member - args : ' + JSON.stringify(args));
     logger.info('##### POST on Member - peers : ' + peers);
 
+    if (!args.withdrawalAmount){
+        throw new Error("Not a valid withdrawal amount.");
+    }
 	let fcn2 = "queryContributionsByMember";
 	let allContributions = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn2, username, orgName);
 	logger.info('All contribs: ' + allContributions);
@@ -449,6 +452,7 @@ app.get('/members/:ssn/balance', awaitHandler(async (req, res) => {
     for (let n = 0; n < allContributions.length; n++) {
         for (let m=0; m< allContributions[n].investments.length;m++){
             totalBalance += allContributions[n].investments[m].dollarVal;
+            allContributions[n].investments[m].transactionType = "contribution";
         }
     }
 
@@ -459,6 +463,7 @@ app.get('/members/:ssn/balance', awaitHandler(async (req, res) => {
         for (let n = 0; n < allWithdrawals.length; n++) {
             for (let m=0; m< allWithdrawals[n].investments.length;m++){
                 totalWithdrawal += allWithdrawals[n].investments[m].dollarVal;
+                allWithdrawals[n].investments[m].transactionType = "withdrawal";
             }
         }
     }
