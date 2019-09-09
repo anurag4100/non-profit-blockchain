@@ -550,35 +550,20 @@ app.get('/height', awaitHandler(async (req, res) => {
 		logger.info('Program output:', stdout);
 		logger.info('Program stderr:', stderr);
 	});*/
-	/*logger.info("username"+username);
+	logger.info("username"+username);
 	logger.info("peers"+peers);
 	logger.info("Orgname"+orgName);
-	var client = await connection.getClientForOrg(orgName, username);
-	var channel = client.getChannel(channelName);
-	var request = {
-		target : peers
-	};
-	logger.info(request);
-	let responses = await channel.queryInfo(request);
-	logger.info(responses)
-	res.send(responses);*/
+	let client = await connection.getClientForOrg(orgName, username);
+	let channel = client.getChannel(channelName);
+	/*let peer = new peer("nd-aifmnorxazcljgnb4yqbhv3dh4.m-n4p7n7upinefda7lppmh2w72zm.n-gyrb47bc6bacpa6ywexlbbb6ui.managedblockchain.us-east-1.amazonaws.com:30009");
 
-
-	logger.info('================ GET on Plan by ID');
-	logger.info('planId: ' + req.params);
-	let args = req.params;
-	let fcn = "queryPlan";
-
-	logger.info('##### GET on Member by username - username : ' + username);
-	logger.info('##### GET on Member by username - userOrg : ' + orgName);
-	logger.info('##### GET on Member by username - channelName : ' + channelName);
-	logger.info('##### GET on Member by username - chaincodeName : ' + chaincodeName);
-	logger.info('##### GET on Member by username - fcn : ' + fcn);
-	logger.info('##### GET on Member by username - args : ' + JSON.stringify(args));
-	logger.info('##### GET on Member by username - peers : ' + peers);
-
-	let message = await query.queryChaincode(peers, channelName, chaincodeName, args, "GetChainInfo", username, orgName);
-	res.send(message);
+	let request = {
+		target : peer
+	};*/
+	//logger.info(request);
+	let responses = await channel.queryInfo();
+	logger.info("Anurag response height: "+JSON.stringify(responses))
+	res.send(responses);
 
 }));
 /************************************************************************************
