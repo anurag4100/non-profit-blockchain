@@ -239,6 +239,35 @@ app.post('/members', awaitHandler(async (req, res) => {
 }));
 
 // POST member
+app.post('/members/:ssn/rollover', awaitHandler(async (req, res) => {
+    logger.info('================ rollover initiated');
+    var args = req.body;
+    var fcn = "createMember";
+
+    logger.info('##### POST on Member - username : ' + username);
+    logger.info('##### POST on Member - userOrg : ' + orgName);
+    logger.info('##### POST on Member - channelName : ' + channelName);
+    logger.info('##### POST on Member - chaincodeName : ' + chaincodeName);
+    logger.info('##### POST on Member - fcn : ' + fcn);
+    logger.info('##### POST on Member - args : ' + JSON.stringify(args));
+    logger.info('##### POST on Member - peers : ' + peers);
+
+    let fcn1 = "queryMembersBySsn"
+    let memberA = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn1, username, orgName);
+    logger.info("MemberA in rollover :"+JSON.stringify(memberA));
+    //assuming this is his first rollover , there can be only one record in the blockchain
+    memberA.sort(function(a, b){
+        return new Date(a.createDate).getTime() - new Date(b.createDate).getTime();
+    });
+    logger.info("Sorted MemberA in rollover :"+JSON.stringify(memberA));
+    //assuming 0th is the oldest , will not be the case in 3rd or subsequent rollovers may be
+    let member = memberA[0];
+    member.contractNumber = args.newContractNumber;
+    let message = await invoke.invokeChaincode(peers, channelName, chaincodeName, member, fcn, username, orgName);
+    res.send(message);
+}));
+
+// POST member
 app.post('/members/:ssn/withdrawal', awaitHandler(async (req, res) => {
     logger.info('================ POST on Member');
     var args = req.body;
@@ -268,9 +297,12 @@ app.post('/members/:ssn/withdrawal', awaitHandler(async (req, res) => {
 		throw new Error("withdrawal amount is more than available balance.");
 	}
 
-	let fcn3 = "queryMember";
+	//let fcn3 = "queryMember";
+	let fcn3 = "queryMembersBySsn";
     let memberA = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn3, username, orgName);
     logger.info("Member in Actual post/withdrawal :"+JSON.stringify(memberA));
+    //assuming the member was in same plan during rollover, we can take any investment list
+    // it will be tricky in case of rollover in different plan
 	let member = memberA[0];
 	logger.info("Member in after post/withdrawal :"+JSON.stringify(member));
 	for (let i=0; i<member.investments.length; i++){
@@ -426,7 +458,8 @@ app.get('/members/:ssn', awaitHandler(async (req, res) => {
 	logger.info('================ GET on Member by ID');
 	logger.info('SSN: ' + req.params);
 	let args = req.params;
-	let fcn = "queryMember";
+	//let fcn = "queryMember";
+    let fcn = "queryMembersBySsn";
 
     logger.info('##### GET on Member by username - username : ' + username);
 	logger.info('##### GET on Member by username - userOrg : ' + orgName);
@@ -437,7 +470,13 @@ app.get('/members/:ssn', awaitHandler(async (req, res) => {
 	logger.info('##### GET on Member by username - peers : ' + peers);
 
     let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
- 	res.send(message);
+    logger.info("Members before sorting "+JSON.stringify(message))
+    //sorting and returning most latest created member
+    message.sort(function(a, b){
+        return new Date(a.createDate).getTime() - new Date(b.createDate).getTime();
+    });
+    logger.info("Members after sorting "+JSON.stringify(message))
+ 	res.send(message.length - 1);
 }));
 
 // GET total account balance of a specific member

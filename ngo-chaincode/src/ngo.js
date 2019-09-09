@@ -504,7 +504,8 @@ let Chaincode = class {
 
     // args is passed as a JSON string
     let json = JSON.parse(args);
-    let key = 'member' + json['ssn'];
+    //modifying key to accomodate multiple contracts here
+    let key = 'member' + json['ssn']+':'+json['contractNumber'];
     json['docType'] = 'member';
 
     console.log('##### createMember payload: ' + JSON.stringify(json));
@@ -512,9 +513,10 @@ let Chaincode = class {
     // Check if the member already exists
     let donorQuery = await stub.getState(key);
     if (donorQuery.toString()) {
-      throw new Error('##### createMember - This donor already exists: ' + json['donorUserName']);
+      throw new Error('##### createMember - This donor already exists: ' + json['ssn']);
     }
-
+    //adding a create date field for easier sorting
+    json.createDate = new Date();
     await stub.putState(key, Buffer.from(JSON.stringify(json)));
     console.log('============= END : createMember ===========');
   }
@@ -1017,6 +1019,16 @@ let Chaincode = class {
         let queryString = '{"selector": {"docType": "member", "contractNumber": "' + json['contractNumber'] + '"}}';
         return queryByString(stub, queryString);
     }
+
+  async queryMembersBySsn(stub, args) {
+    console.log('============= START : queryMembersForEmployer ===========');
+    console.log('##### queryMembersForEmployer arguments: ' + JSON.stringify(args));
+
+    // args is passed as a JSON string
+    let json = JSON.parse(args);
+    let queryString = '{"selector": {"docType": "member", "ssn": "' + json['ssn'] + '"}}';
+    return queryByString(stub, queryString);
+  }
 
   /**
    * Retrieves all donations
