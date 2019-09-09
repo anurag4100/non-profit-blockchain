@@ -861,7 +861,7 @@ let Chaincode = class {
         console.log('##### createContribution : ' + JSON.stringify(json1));
 
         // Confirm the Member exists
-        let ngoKey = 'member' + json1['ssn'];
+        let ngoKey = 'member' + json1['ssn']+':'+json1['contractNumber'];
         let ngoQuery = await stub.getState(ngoKey);
         if (!ngoQuery.toString()) {
           throw new Error('##### createContribution - Cannot create contribution as the Member does not exist: ' + json1['ssn']);
@@ -932,10 +932,10 @@ let Chaincode = class {
     console.log('##### createWithdrawal : ' + JSON.stringify(json));
 
     // Confirm the Member exists
-    let ngoKey = 'member' + json['ssn'];
+    let ngoKey = 'member' + json['ssn']+':'+json['contractNumber'];
     let ngoQuery = await stub.getState(ngoKey);
     if (!ngoQuery.toString()) {
-      throw new Error('##### createWithdrawal - Cannot create contribution as the Member does not exist: ' + json['ssn']);
+      throw new Error('##### createWithdrawal - Cannot create withdrawal as the Member does not exist: ' + json['ssn']);
     }
 
     // Confirm the Employer exists
