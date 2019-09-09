@@ -102,7 +102,7 @@ const wss = new WebSocketServer.Server({ server });
 wss.on('connection', function connection(ws) {
 	logger.info('****************** WEBSOCKET SERVER - received connection ************************');
 	ws.on('message', function incoming(message) {
-		console.log('##### Websocket Server received message: %s', message);
+		//console.log('##### Websocket Server received message: %s', message);
 	});
 
 	ws.send('something');
@@ -543,7 +543,6 @@ app.get('/height', awaitHandler(async (req, res) => {
 		logger.info('Program output:', stdout);
 		logger.info('Program stderr:', stderr);
 	});*/
-	logger.info("yaha aaya code");
 	/*shell.exec('docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \\\
         -e "CORE_PEER_ADDRESS=nd-aifmnorxazcljgnb4yqbhv3dh4.m-n4p7n7upinefda7lppmh2w72zm.n-gyrb47bc6bacpa6ywexlbbb6ui.managedblockchain.us-east-1.amazonaws.com:30009" -e "CORE_PEER_LOCALMSPID=m-N4P7N7UPINEFDA7LPPMH2W72ZM" -e "CORE_PEER_MSPCONFIGPATH=/opt/home/admin-msp" \\\
         cli peer channel getinfo -c mychannel', function(code, stdout, stderr) {
@@ -551,7 +550,7 @@ app.get('/height', awaitHandler(async (req, res) => {
 		logger.info('Program output:', stdout);
 		logger.info('Program stderr:', stderr);
 	});*/
-	logger.info("username"+username);
+	/*logger.info("username"+username);
 	logger.info("peers"+peers);
 	logger.info("Orgname"+orgName);
 	var client = await connection.getClientForOrg(orgName, username);
@@ -562,7 +561,24 @@ app.get('/height', awaitHandler(async (req, res) => {
 	logger.info(request);
 	let responses = await channel.queryInfo(request);
 	logger.info(responses)
-	res.send(responses);
+	res.send(responses);*/
+
+
+	logger.info('================ GET on Plan by ID');
+	logger.info('planId: ' + req.params);
+	let args = req.params;
+	let fcn = "queryPlan";
+
+	logger.info('##### GET on Member by username - username : ' + username);
+	logger.info('##### GET on Member by username - userOrg : ' + orgName);
+	logger.info('##### GET on Member by username - channelName : ' + channelName);
+	logger.info('##### GET on Member by username - chaincodeName : ' + chaincodeName);
+	logger.info('##### GET on Member by username - fcn : ' + fcn);
+	logger.info('##### GET on Member by username - args : ' + JSON.stringify(args));
+	logger.info('##### GET on Member by username - peers : ' + peers);
+
+	let message = await query.queryChaincode(peers, channelName, chaincodeName, args, "GetChainInfo", username, orgName);
+	res.send(message);
 
 }));
 /************************************************************************************
