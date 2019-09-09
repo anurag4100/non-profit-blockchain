@@ -466,7 +466,8 @@ app.get('/members/:ssn/balance', awaitHandler(async (req, res) => {
 
     let response = {
         totalBalance : totalBalance-totalWithdrawal,
-        allContributions : allContributions
+        allContributions : allContributions,
+        allWithdrawals : allWithdrawals
     }
     res.send(response);
 }));
