@@ -430,11 +430,13 @@ app.get('/employers/:contractNumber/members', awaitHandler(async (req, res) => {
     logger.info('##### GET on Member - peers : ' + peers);
 
     let message = await query.queryChaincode(peers, channelName, chaincodeName, args, fcn, username, orgName);
-    logger.info('list of members before filter'+message);
+    logger.info('list of members before filter'+JSON.stringify(message));
     let fcn1 = "queryMembersBySsn";
     // this is to filter
     for(let i=0; i < message.length; i++){
+        logger.info('current ssn :'+JSON.stringify(message[i].ssn));
         let memberA = await query.queryChaincode(peers, channelName, chaincodeName, message[i].ssn, fcn1, username, orgName);
+        logger.info('Members for this ssn:'+JSON.stringify(memberA));
         //need sorting logic here
         if (memberA.length > 1){
             logger.info('more than two members found on this ssn');
@@ -448,7 +450,7 @@ app.get('/employers/:contractNumber/members', awaitHandler(async (req, res) => {
             }
         }
     }
-    logger.info('list of members after filter'+message);
+    logger.info('list of members after filter'+JSON.stringify(message));
     res.send(message);
 }));
 
