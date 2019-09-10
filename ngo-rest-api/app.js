@@ -435,7 +435,8 @@ app.get('/employers/:contractNumber/members', awaitHandler(async (req, res) => {
     // this is to filter
     for(let i=0; i < message.length; i++){
         logger.info('current ssn :'+JSON.stringify(message[i].ssn));
-        let memberA = await query.queryChaincode(peers, channelName, chaincodeName, message[i].ssn, fcn1, username, orgName);
+        let ssnClean = JSON.stringify(message[i].ssn);
+        let memberA = await query.queryChaincode(peers, channelName, chaincodeName, ssnClean.replace(/\"/g, ""), fcn1, username, orgName);
         logger.info('Members for this ssn:'+JSON.stringify(memberA));
         //need sorting logic here
         if (memberA.length > 1){
