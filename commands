@@ -1,0 +1,115 @@
+
+#CHAINCODE COMMANDS
+#ssh into the peer
+#ssh ec2-user@ec2-3-214-216-163.compute-1.amazonaws.com -i ~/BlockChainNwAn-keypair.pem
+ssh ec2-34-239-170-112.compute-1.amazonaws.com -i ~BlockChainNwAn-keypair.pem
+
+#pull lates code
+cd ~/non-profit-blockchain/
+git pull
+
+
+#source variables
+cat ~/peer-exports.sh 
+
+source ~/peer-exports.sh 
+
+
+
+#copy chaincode
+
+cd ~
+mkdir -p ./fabric-samples/chaincode/ngo
+cp ./non-profit-blockchain/ngo-chaincode/src/* ./fabric-samples/chaincode/ngo
+
+
+#install on all peers (increase version first)
+
+export CCV="58"
+docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \
+    -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" -e "CORE_PEER_ADDRESS=$PEER"  \
+    cli peer chaincode install -n ngo -l node -v v0 -p /opt/gopath/src/github.com/ngo
+	
+	
+#upgrade (increase the version first)
+
+docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \
+    -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" -e "CORE_PEER_ADDRESS=$PEER"  \
+    cli peer chaincode upgrade -o $ORDERER --cafile /opt/home/managedblockchain-tls-chain.pem --tls  -C mychannel -n ngo -v v55 -p /opt/gopath/src/github.com/ngo -c '{"Args":["init","a","100","b","200","c","300"]}'
+
+
+#test with a query
+
+docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \
+    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \
+    cli peer chaincode query -C mychannel -n ngo -c '{"Args":["queryAllPlans"]}'
+
+#blockchain info
+docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \
+    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \
+    cli peer channel getinfo -c mychannel1
+
+#REST SERVER COMMANDS
+
+#ssh into the peer
+#ssh ec2-user@ec2-3-214-216-163.compute-1.amazonaws.com -i ~/BlockChainNwAn-keypair.pem
+ssh ec2-18-206-83-18.compute-1.amazonaws.com -i ~BlockChainNwAn-keypair.pem
+	
+#pull lates code
+cd ~/non-profit-blockchain/
+git pull
+
+#Source the export variables
+cd ~/non-profit-blockchain/ngo-fabric
+source fabric-exports.sh
+
+#use carbon
+
+. ~/.nvm/nvm.sh
+nvm install lts/carbon
+nvm use lts/carbon
+
+
+
+#install app
+
+cd ~/non-profit-blockchain/ngo-rest-api
+npm install
+
+
+#generate connection profile
+
+cd ~/non-profit-blockchain/ngo-rest-api/connection-profile
+./gen-connection-profile.sh
+cd ~/non-profit-blockchain/tmp/connection-profile/
+cat ngo-connection-profile.yaml
+ls -lR
+
+
+
+#start the app
+cd ~/non-profit-blockchain/ngo-rest-api
+nvm use lts/carbon
+node app.js &
+
+#enroll a dummy user first!!
+curl -s -X POST http://localhost:3000/users -H "content-type: application/x-www-form-urlencoded" -d 'username=user7&orgName=Org1'
+
+npm install shelljs
+
+
+#UI commands
+
+NOT IN SSH
+
+cd ~/non-profit-blockchain/ngo-ui
+npm i
+
+
+
+
+new channel
+docker exec -e "CORE_PEER_TLS_ENABLED=true" -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/home/managedblockchain-tls-chain.pem" \
+    -e "CORE_PEER_ADDRESS=$PEER" -e "CORE_PEER_LOCALMSPID=$MSP" -e "CORE_PEER_MSPCONFIGPATH=$MSP_PATH" \
+    cli peer chaincode invoke -C mychannel1 -n ngo \
+    -c  '{"Args":["createDonor","{\"donorUserName\": \"edge\", \"email\": \"edge@def.com\", \"registeredDate\": \"2018-10-22T11:52:20.182Z\"}"]}' -o $ORDERER --cafile /opt/home/managedblockchain-tls-chain.pem --tls
